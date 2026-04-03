@@ -178,8 +178,9 @@ h1 {
         <h1>Manage Collection "content"</h1>
     <div id="content-list"></div>
 
-    <h2>Add/Edit Content</h2>
-    <form id="content-form">
+    <h2>Add Content</h2>
+    <button type="button" onclick="showForm()" class="add-btn" style="background-color: #28a745 !important; color: #fff !important; padding: 10px 20px; border: 2px solid #000 !important; border-radius: 5px; cursor: pointer;">Add content</button>
+    <form id="content-form" style="display: none">
         <input type="hidden" id="doc-id">
         <input type="text" id="title" placeholder="Title" required>
         <textarea id="info" placeholder="Info" required></textarea>
@@ -192,7 +193,7 @@ h1 {
             <option value="Châu Á">Châu Á</option>
             <option value="Manhwa/Manga">Manhwa/Manga</option>
         </select>
-        <button type="submit" class="add-btn">Add/Edit</button>
+        <button type="submit" class="add-btn">Submit</button>
     </form>
 
     <script type="module">
@@ -272,10 +273,6 @@ async function loadContents() {
         item.className = 'content-item';
         item.innerHTML = `
             <h3>${data.title}</h3>
-            <p>${data.info}</p>
-            <p>Image: ${data.img || 'N/A'}</p>
-            <p>Video: ${data.vid || 'N/A'}</p>
-            <p>Category: ${data.cate}</p>
             <button class="edit-btn" onclick='editContent("${doc.id}", "${data.title}", "${data.info}", "${data.img || ''}", "${data.vid || ''}", "${data.cate}")'>Edit</button>
             <button class="delete-btn" onclick='deleteContent("${doc.id}")'>Delete</button>
         `;
@@ -283,20 +280,28 @@ async function loadContents() {
     });
 }
 
-window.editContent = function(id, title, info, img, vid, cate) {
+globalThis.editContent = function(id, title, info, img, vid, cate) {
     docIdField.value = id;
     titleField.value = title;
     infoField.value = info;
     imgField.value = img;
     vidField.value = vid;
     cateField.value = cate;
+    contentForm.style.display = 'block';
 };
 
-window.deleteContent = async function(id) {
+globalThis.deleteContent = async function(id) {
     if (confirm('Are you sure you want to delete?')) {
         await deleteDoc(doc(window.db, 'content', id));
         loadContents();
     }
+};
+
+globalThis.showForm = function() {
+    console.log('showForm called');
+    contentForm.reset();
+    docIdField.value = '';
+    contentForm.style.display = 'block';
 };
 
 contentForm.addEventListener('submit', async (e) => {
@@ -315,6 +320,7 @@ contentForm.addEventListener('submit', async (e) => {
     }
     contentForm.reset();
     loadContents();
+    contentForm.style.display = 'none';
 });
 
 loadContents();
