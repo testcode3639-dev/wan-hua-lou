@@ -22,7 +22,8 @@
         #header {
             position: fixed;
             top: 20px;
-            left: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             align-items: center;
             z-index: 10;
@@ -57,12 +58,12 @@
             padding: 120px 20px 20px;
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 20px;
         }
 
         .content-item {
-            background: rgba(0, 0, 0, 0.7);
+            background: transparent;
             border-radius: 10px;
             padding: 20px;
             width: 300px;

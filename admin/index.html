@@ -34,7 +34,7 @@ form {
     margin: 20px 0;
 }
 
-input, textarea, button {
+input, textarea, select, button {
     display: block;
     margin: 8px 0;
     width: 100%;
@@ -47,7 +47,7 @@ input, textarea, button {
     transition: all 0.3s ease;
 }
 
-input:focus, textarea:focus {
+input:focus, textarea:focus, select:focus {
     border-color: #007bff;
     outline: none;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
@@ -185,7 +185,13 @@ h1 {
         <textarea id="info" placeholder="Info" required></textarea>
         <input type="text" id="img" placeholder="Image URL">
         <input type="text" id="vid" placeholder="Video URL">
-        <input type="text" id="cate" placeholder="Category" required>
+        <select id="cate" required>
+            <option value="">Chọn Category</option>
+            <option value="Việt Nam">Việt Nam</option>
+            <option value="Trung Quốc">Trung Quốc</option>
+            <option value="Châu Á">Châu Á</option>
+            <option value="Manhwa/Manga">Manhwa/Manga</option>
+        </select>
         <button type="submit" class="add-btn">Add/Edit</button>
     </form>
 
@@ -230,27 +236,16 @@ const cateField = document.getElementById('cate');
 
 async function checkLogin(username, password) {
     try {
-        console.log("Attempting login with username:", username, "password:", password);
         const docRef = doc(window.db, 'admin', 'account');
-        console.log("DocRef:", docRef);
         const docSnap = await getDoc(docRef);
-        console.log("DocSnap exists:", docSnap.exists());
         if (docSnap.exists()) {
             const data = docSnap.data();
-            console.log("Data from Firestore:", data);
-            console.log("Expected user:", data.user, "Expected password:", data.password);
             if (data.user === username && data.password === password) {
-                console.log("Login successful");
                 return true;
-            } else {
-                console.log("Login failed: credentials do not match");
             }
-        } else {
-            console.log("Document 'account' does not exist in collection 'admin'");
         }
         return false;
     } catch (error) {
-        console.error("Error checking login:", error);
         return false;
     }
 }
@@ -281,8 +276,8 @@ async function loadContents() {
             <p>Image: ${data.img || 'N/A'}</p>
             <p>Video: ${data.vid || 'N/A'}</p>
             <p>Category: ${data.cate}</p>
-            <button class="edit-btn" onclick="editContent('${doc.id}', '${data.title}', '${data.info}', '${data.img || ''}', '${data.vid || ''}', '${data.cate}')">Edit</button>
-            <button class="delete-btn" onclick="deleteContent('${doc.id}')">Delete</button>
+            <button class="edit-btn" onclick='editContent("${doc.id}", "${data.title}", "${data.info}", "${data.img || ''}", "${data.vid || ''}", "${data.cate}")'>Edit</button>
+            <button class="delete-btn" onclick='deleteContent("${doc.id}")'>Delete</button>
         `;
         contentList.appendChild(item);
     });
