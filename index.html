@@ -56,9 +56,11 @@
             position: relative;
             z-index: 5;
             padding: 120px 20px 20px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 👈 mỗi dòng 2 item */
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
+            justify-content: flex-start;
+            max-width: 50%;
         }
 
         .content-item {
