@@ -82,8 +82,9 @@
         }
 
         .content-item img {
+            max-height: 200px;
+            width: auto;
             max-width: 100%;
-            height: auto;
             border-radius: 5px;
         }
 
@@ -127,7 +128,6 @@
                 const thumbUrl = data.thumb || (data.img && Array.isArray(data.img) && data.img.length > 0 ? data.img[0].url : '');
                 item.innerHTML = `
                     <h3>${data.title}</h3>
-                    <p>${data.info}</p>
                     ${thumbUrl ? `<img src="${thumbUrl}" alt="Image">` : ''}
                     <p class="category">${data.cate}</p>
                 `;
