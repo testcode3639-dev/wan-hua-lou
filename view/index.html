@@ -59,6 +59,8 @@
             flex-wrap: wrap;
             justify-content: flex-start;
             gap: 20px;
+            width: 45vw;
+            float: left;
         }
 
         .content-item {
@@ -88,6 +90,7 @@
             height: auto;
             border-radius: 5px;
             margin: 0 0 10px 0;
+            flex: 0 0 100%;
         }
 
         .content-item p {
@@ -132,11 +135,11 @@
                         <div class="content-item">
                             <h1>${data.title}</h1>
                             <p>${data.info}</p>
-                            <div class="images">
-                                ${data.img ? data.img.map(img => `<img src="${img.url}" alt="Image">`).join('') : ''}
-                            </div>
                             <div class="videos">
                                 ${data.vid ? data.vid.map(vid => `<video controls><source src="${vid.url}" type="video/mp4"></video>`).join('') : ''}
+                            </div>
+                            <div class="images">
+                                ${data.img ? data.img.map(img => `<img src="${img.url}" alt="Image">`).join('') : ''}
                             </div>
                         </div>
                     `;
