@@ -6,6 +6,7 @@
     <title>Vạn Hoa Lầu</title>
     <link rel="icon" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Shalimar&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         @font-face {
             font-family: 'VNI Thuphap Vniongdo';
@@ -136,10 +137,12 @@
                 const item = document.createElement('div');
                 item.className = 'content-item';
                 const thumbUrl = data.thumb || (data.img && Array.isArray(data.img) && data.img.length > 0 ? data.img[0].url : '');
+                const imageCount = data.img && Array.isArray(data.img) ? data.img.length : 0;
+                const videoCount = data.video && Array.isArray(data.video) ? data.video.length : 0;
                 item.innerHTML = `
                     <h3>${data.title}</h3>
                     ${thumbUrl ? `<img src="${thumbUrl}" alt="Image">` : ''}
-                    <p class="category">${data.cate}</p>
+                    <p class="category">${data.cate} <i class="bi bi-card-image"></i> ${imageCount}, Video: ${videoCount}</p>
                 `;
                 item.style.cursor = 'pointer';
                 item.onclick = () => window.location.href = 'view/index.html?id=' + doc.id;
