@@ -142,13 +142,26 @@
                 const videoCount = data.video && Array.isArray(data.video) ? data.video.length : 0;
                 item.innerHTML = `
                     <h3>${data.title}</h3>
-                    ${thumbUrl ? `<img src="${thumbUrl}" alt="Image">` : ''}
+                    ${thumbUrl ? `<img src="${thumbUrl}" alt="Image" onload="adjustImage(this)">` : ''}
                     <p class="category">${data.cate}: <i class="bi bi-card-image"></i> ${imageCount}, <i class="bi bi-camera-video"></i> ${videoCount}</p>
                 `;
                 item.style.cursor = 'pointer';
                 item.onclick = () => window.location.href = 'view/index.html?id=' + doc.id;
                 contentContainer.appendChild(item);
             });
+        }
+
+        function adjustImage(img) {
+            const aspectRatio = img.naturalWidth / img.naturalHeight;
+            const targetWidth = window.innerWidth * 0.45;
+            const targetHeight = targetWidth / aspectRatio;
+            if (targetHeight > window.innerHeight) {
+                img.style.height = '80vh';
+                img.style.width = 'auto';
+            } else {
+                img.style.width = '45vw';
+                img.style.height = 'auto';
+            }
         }
 
         document.addEventListener('DOMContentLoaded', loadContents);
