@@ -325,14 +325,14 @@ async function loadContents() {
         item.innerHTML = `
             <h3>${data.title}</h3>
             <p>${data.info}</p>
-            <button class="edit-btn" onclick='editContent("${doc.id}", "${data.title}", "${data.info}", ${JSON.stringify(data.img || [])}, ${JSON.stringify(data.vid || [])}, "${data.cate}")'>Edit</button>
+            <button class="edit-btn" onclick='editContent("${doc.id}", "${data.title}", "${data.info}", ${JSON.stringify(data.img || [])}, ${JSON.stringify(data.vid || [])}, "${data.cate}", "${data.thumb || ''}")'>Edit</button>
             <button class="delete-btn" onclick='deleteContent("${doc.id}")'>Delete</button>
         `;
         contentList.appendChild(item);
     });
 }
 
-globalThis.renderExistingMedia = function() {
+globalThis.renderExistingMedia = function(selectedThumb = '') {
     const container = document.getElementById('preview-selected');
     if (container) {
         const existingItems = container.querySelectorAll('.existing');
@@ -340,7 +340,7 @@ globalThis.renderExistingMedia = function() {
         uploadedImages.forEach((img, index) => {
             const item = document.createElement('div');
             item.className = 'media-item existing';
-            item.innerHTML = `<img src="${img.url}" alt="Image"><button type="button" onclick="removeImage(${index})">Delete</button>`;
+            item.innerHTML = `<img src="${img.url}" alt="Image"><input type="radio" name="thumb" value="${img.url}" ${img.url === selectedThumb ? 'checked' : ''}><button type="button" onclick="removeImage(${index})">Delete</button>`;
             container.appendChild(item);
         });
         uploadedVideos.forEach((vid, index) => {
@@ -362,14 +362,14 @@ globalThis.removeVideo = function(index) {
     renderExistingMedia();
 };
 
-globalThis.editContent = function(id, title, info, img, vid, cate) {
+globalThis.editContent = function(id, title, info, img, vid, cate, thumb) {
     docIdField.value = id;
     titleField.value = title;
     infoField.value = info;
     uploadedImages = img || [];
     uploadedVideos = vid || [];
     cateField.value = cate;
-    renderExistingMedia();
+    renderExistingMedia(thumb);
     contentForm.style.display = 'block';
 };
 
@@ -439,12 +439,14 @@ contentForm.addEventListener('submit', async (e) => {
         uploadedVideos = [];
     }
     await uploadMedia();
+    const thumbUrl = document.querySelector('input[name="thumb"]:checked')?.value || '';
     const data = {
         title: titleField.value,
         info: infoField.value,
         img: uploadedImages,
         vid: uploadedVideos,
-        cate: cateField.value
+        cate: cateField.value,
+        thumb: thumbUrl
     };
     if (docIdField.value) {
         await updateDoc(doc(window.db, 'content', docIdField.value), data);

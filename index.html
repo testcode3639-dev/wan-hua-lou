@@ -124,11 +124,11 @@
                 const data = doc.data();
                 const item = document.createElement('div');
                 item.className = 'content-item';
+                const thumbUrl = data.thumb || (data.img && Array.isArray(data.img) && data.img.length > 0 ? data.img[0].url : '');
                 item.innerHTML = `
                     <h3>${data.title}</h3>
                     <p>${data.info}</p>
-                    ${data.img && (Array.isArray(data.img) ? data.img.length > 0 : data.img) ? `<img src="${Array.isArray(data.img) ? data.img[0].url : data.img}" alt="Image">` : ''}
-                    ${data.vid && (Array.isArray(data.vid) ? data.vid.length > 0 : data.vid) ? `<p><a href="${Array.isArray(data.vid) ? data.vid[0].url : data.vid}" target="_blank">Watch Video</a></p>` : ''}
+                    ${thumbUrl ? `<img src="${thumbUrl}" alt="Image">` : ''}
                     <p class="category">${data.cate}</p>
                 `;
                 item.style.cursor = 'pointer';
