@@ -176,10 +176,9 @@ h1 {
     </div>
     <div id="main-content" class="main-content">
         <h1>Manage Collection "content"</h1>
+    <button type="button" onclick="showForm()" class="add-btn" style="background-color: #28a745 !important; color: #fff !important; padding: 10px 20px; border: 2px solid #000 !important; border-radius: 5px; cursor: pointer;">Add content</button>
     <div id="content-list"></div>
 
-    <h2>Add Content</h2>
-    <button type="button" onclick="showForm()" class="add-btn" style="background-color: #28a745 !important; color: #fff !important; padding: 10px 20px; border: 2px solid #000 !important; border-radius: 5px; cursor: pointer;">Add content</button>
     <form id="content-form" style="display: none">
         <input type="hidden" id="doc-id">
         <input type="text" id="title" placeholder="Title" required>
@@ -187,13 +186,13 @@ h1 {
         <input type="text" id="img" placeholder="Image URL">
         <input type="text" id="vid" placeholder="Video URL">
         <select id="cate" required>
-            <option value="">Chọn Category</option>
-            <option value="Việt Nam">Việt Nam</option>
+            <option value="Việt Nam" selected>Việt Nam</option>
             <option value="Trung Quốc">Trung Quốc</option>
             <option value="Châu Á">Châu Á</option>
             <option value="Manhwa/Manga">Manhwa/Manga</option>
         </select>
         <button type="submit" class="add-btn">Submit</button>
+        <button type="button" onclick="cancelForm()">Cancel</button>
     </form>
 
     <script type="module">
@@ -302,6 +301,12 @@ globalThis.showForm = function() {
     contentForm.reset();
     docIdField.value = '';
     contentForm.style.display = 'block';
+};
+
+globalThis.cancelForm = function() {
+    contentForm.reset();
+    docIdField.value = '';
+    contentForm.style.display = 'none';
 };
 
 contentForm.addEventListener('submit', async (e) => {
