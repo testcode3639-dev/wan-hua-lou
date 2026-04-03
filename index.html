@@ -56,10 +56,9 @@
             position: relative;
             z-index: 5;
             padding: 120px 20px 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 👈 mỗi dòng 2 item */
+            gap: 10px;
         }
 
         .content-item {
