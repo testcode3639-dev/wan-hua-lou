@@ -274,6 +274,7 @@ window.getDoc = getDoc;
 
 let uploadedImages = [];
 let uploadedVideos = [];
+let currentThumb = '';
 
 const authForm = document.getElementById('auth-form');
 const loginError = document.getElementById('login-error');
@@ -332,15 +333,18 @@ async function loadContents() {
     });
 }
 
-globalThis.renderExistingMedia = function(selectedThumb = '') {
+globalThis.renderExistingMedia = function() {
     const container = document.getElementById('preview-selected');
     if (container) {
         const existingItems = container.querySelectorAll('.existing');
         existingItems.forEach(item => item.remove());
+        console.log('Rendering with currentThumb:', currentThumb);
         uploadedImages.forEach((img, index) => {
+            const isChecked = img.url === currentThumb;
+            console.log(`Image ${img.url}: checked=${isChecked}`);
             const item = document.createElement('div');
             item.className = 'media-item existing';
-            item.innerHTML = `<img src="${img.url}" alt="Image"><input type="radio" name="thumb" value="${img.url}" ${img.url === selectedThumb ? 'checked' : ''}><button type="button" onclick="removeImage(${index})">Delete</button>`;
+            item.innerHTML = `<img src="${img.url}" alt="Image"><input type="radio" name="thumb" value="${img.url}" ${isChecked ? 'checked' : ''}><button type="button" onclick="removeImage(${index})">Delete</button>`;
             container.appendChild(item);
         });
         uploadedVideos.forEach((vid, index) => {
@@ -369,7 +373,10 @@ globalThis.editContent = function(id, title, info, img, vid, cate, thumb) {
     uploadedImages = img || [];
     uploadedVideos = vid || [];
     cateField.value = cate;
-    renderExistingMedia(thumb);
+    currentThumb = thumb;
+    console.log('Editing with thumb:', thumb);
+    console.log('uploadedImages:', uploadedImages);
+    renderExistingMedia();
     contentForm.style.display = 'block';
 };
 
@@ -396,6 +403,7 @@ globalThis.cancelForm = function() {
     docIdField.value = '';
     uploadedImages = [];
     uploadedVideos = [];
+    currentThumb = '';
     renderExistingMedia();
     document.getElementById('preview-selected').innerHTML = '';
     contentForm.style.display = 'none';
@@ -403,30 +411,32 @@ globalThis.cancelForm = function() {
 
 globalThis.uploadMedia = async function() {
     const files = document.getElementById('mediaFile').files;
-    for (let file of files) {
-        const isImage = file.type.startsWith('image/');
-        const endpoint = isImage ? 'image/upload' : 'video/upload';
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'fresh-girl');
-        const response = await fetch(`https://api.cloudinary.com/v1_1/dwsljlcqr/${endpoint}`, {
-            method: 'POST',
-            body: formData
-        });
-        const result = await response.json();
-        if (response.ok) {
-            const id = result.public_id;
-            const url = result.secure_url;
-            if (isImage) {
-                uploadedImages.push({id, url});
+    if (files.length > 0) {
+        for (let file of files) {
+            const isImage = file.type.startsWith('image/');
+            const endpoint = isImage ? 'image/upload' : 'video/upload';
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'fresh-girl');
+            const response = await fetch(`https://api.cloudinary.com/v1_1/dwsljlcqr/${endpoint}`, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (response.ok) {
+                const id = result.public_id;
+                const url = result.secure_url;
+                if (isImage) {
+                    uploadedImages.push({id, url});
+                } else {
+                    uploadedVideos.push({id, url});
+                }
             } else {
-                uploadedVideos.push({id, url});
+                console.error('Upload failed:', response.status, result);
             }
-        } else {
-            console.error('Upload failed:', response.status, result);
         }
+        renderExistingMedia();
     }
-    renderExistingMedia();
 };
 
 contentForm.addEventListener('submit', async (e) => {
@@ -439,7 +449,10 @@ contentForm.addEventListener('submit', async (e) => {
         uploadedVideos = [];
     }
     await uploadMedia();
-    const thumbUrl = document.querySelector('input[name="thumb"]:checked')?.value || '';
+    const checkedRadio = document.querySelector('input[name="thumb"]:checked');
+    console.log('Checked radio:', checkedRadio);
+    const thumbUrl = checkedRadio ? checkedRadio.value : '';
+    console.log('thumbUrl:', thumbUrl);
     const data = {
         title: titleField.value,
         info: infoField.value,
