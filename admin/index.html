@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Content Firebase</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="login-form" class="login-form">
+        <h2>Admin Login</h2>
+        <form id="auth-form">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <div id="login-error" style="color: red; display: none;"></div>
+    </div>
+    <div id="main-content" class="main-content">
+        <h1>Manage Collection "content"</h1>
+    <div id="content-list"></div>
+
+    <h2>Add/Edit Content</h2>
+    <form id="content-form">
+        <input type="hidden" id="doc-id">
+        <input type="text" id="title" placeholder="Title" required>
+        <textarea id="info" placeholder="Info" required></textarea>
+        <input type="text" id="img" placeholder="Image URL">
+        <input type="text" id="vid" placeholder="Video URL">
+        <input type="text" id="cate" placeholder="Category" required>
+        <button type="submit" class="add-btn">Add/Edit</button>
+    </form>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
