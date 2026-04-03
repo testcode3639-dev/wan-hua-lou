@@ -184,7 +184,9 @@ h1 {
         <input type="text" id="title" placeholder="Title" required>
         <textarea id="info" placeholder="Info" required></textarea>
         <input type="text" id="img" placeholder="Image URL">
+        <input type="file" id="imgFile" multiple accept="image/*">
         <input type="text" id="vid" placeholder="Video URL">
+        <input type="file" id="vidFile" multiple accept="video/*">
         <select id="cate" required>
             <option value="Việt Nam" selected>Việt Nam</option>
             <option value="Trung Quốc">Trung Quốc</option>
@@ -220,6 +222,9 @@ window.updateDoc = updateDoc;
 window.deleteDoc = deleteDoc;
 window.doc = doc;
 window.getDoc = getDoc;
+
+let uploadedImages = [];
+let uploadedVideos = [];
 
 const authForm = document.getElementById('auth-form');
 const loginError = document.getElementById('login-error');
@@ -268,11 +273,15 @@ async function loadContents() {
     const querySnapshot = await getDocs(collection(window.db, 'content'));
     querySnapshot.forEach((doc) => {
         const data = doc.data();
+        const imgUrls = data.img ? data.img.map(i => i.url).join(', ') : '';
+        const vidUrls = data.vid ? data.vid.map(v => v.url).join(', ') : '';
         const item = document.createElement('div');
         item.className = 'content-item';
         item.innerHTML = `
             <h3>${data.title}</h3>
-            <button class="edit-btn" onclick='editContent("${doc.id}", "${data.title}", "${data.info}", "${data.img || ''}", "${data.vid || ''}", "${data.cate}")'>Edit</button>
+            <p>Images: ${imgUrls}</p>
+            <p>Videos: ${vidUrls}</p>
+            <button class="edit-btn" onclick='editContent("${doc.id}", "${data.title}", "${data.info}", ${JSON.stringify(data.img || [])}, ${JSON.stringify(data.vid || [])}, "${data.cate}")'>Edit</button>
             <button class="delete-btn" onclick='deleteContent("${doc.id}")'>Delete</button>
         `;
         contentList.appendChild(item);
@@ -283,8 +292,10 @@ globalThis.editContent = function(id, title, info, img, vid, cate) {
     docIdField.value = id;
     titleField.value = title;
     infoField.value = info;
-    imgField.value = img;
-    vidField.value = vid;
+    uploadedImages = img || [];
+    uploadedVideos = vid || [];
+    imgField.value = uploadedImages.map(i => i.url).join(', ');
+    vidField.value = uploadedVideos.map(v => v.url).join(', ');
     cateField.value = cate;
     contentForm.style.display = 'block';
 };
@@ -300,22 +311,116 @@ globalThis.showForm = function() {
     console.log('showForm called');
     contentForm.reset();
     docIdField.value = '';
+    uploadedImages = [];
+    uploadedVideos = [];
     contentForm.style.display = 'block';
 };
 
 globalThis.cancelForm = function() {
     contentForm.reset();
     docIdField.value = '';
+    uploadedImages = [];
+    uploadedVideos = [];
     contentForm.style.display = 'none';
+};
+
+globalThis.uploadImages = async function() {
+    const files = document.getElementById('imgFile').files;
+    for (let file of files) {
+        console.log('Uploading file:', file.name);
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'fresh-girl');
+        const response = await fetch(`https://api.cloudinary.com/v1_1/dwsljlcqr/image/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        if (response.ok) {
+            console.log('Upload result:', result);
+            const id = result.public_id;
+            const url = result.secure_url;
+            uploadedImages.push({id, url});
+            const imgField = document.getElementById('img');
+            const current = imgField.value;
+            imgField.value = current ? current + ',' + url : url;
+        } else {
+            console.error('Upload failed:', response.status, result);
+        }
+    }
+};
+
+globalThis.uploadVideos = async function() {
+    const files = document.getElementById('vidFile').files;
+    for (let file of files) {
+        console.log('Uploading video file:', file.name);
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'ml_default');
+        const response = await fetch(`https://api.cloudinary.com/v1_1/dwsljlcqr/video/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        if (response.ok) {
+            console.log('Upload video result:', result);
+            const id = result.public_id;
+            const url = result.secure_url;
+            uploadedVideos.push({id, url});
+            const vidField = document.getElementById('vid');
+            const current = vidField.value;
+            vidField.value = current ? current + ',' + url : url;
+        } else {
+            console.error('Upload video failed:', response.status, result);
+        }
+    }
 };
 
 contentForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const imgFiles = document.getElementById('imgFile').files;
+    const vidFiles = document.getElementById('vidFile').files;
+    uploadedImages = [];
+    uploadedVideos = [];
+    for (let file of imgFiles) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'fresh-girl');
+        const response = await fetch(`https://api.cloudinary.com/v1_1/dwsljlcqr/image/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        if (response.ok) {
+            const id = result.public_id;
+            const url = result.secure_url;
+            uploadedImages.push({id, url});
+        } else {
+            console.error('Upload image failed:', response.status, result);
+        }
+    }
+    for (let file of vidFiles) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'fresh-girl');
+        const response = await fetch(`https://api.cloudinary.com/v1_1/dwsljlcqr/video/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        if (response.ok) {
+            const id = result.public_id;
+            const url = result.secure_url;
+            uploadedVideos.push({id, url});
+        } else {
+            console.error('Upload video failed:', response.status, result);
+        }
+    }
     const data = {
         title: titleField.value,
         info: infoField.value,
-        img: imgField.value,
-        vid: vidField.value,
+        img: uploadedImages,
+        vid: uploadedVideos,
         cate: cateField.value
     };
     if (docIdField.value) {
@@ -324,6 +429,8 @@ contentForm.addEventListener('submit', async (e) => {
         await addDoc(collection(window.db, 'content'), data);
     }
     contentForm.reset();
+    uploadedImages = [];
+    uploadedVideos = [];
     loadContents();
     contentForm.style.display = 'none';
 });
