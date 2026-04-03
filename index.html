@@ -142,7 +142,7 @@
                 item.innerHTML = `
                     <h3>${data.title}</h3>
                     ${thumbUrl ? `<img src="${thumbUrl}" alt="Image">` : ''}
-                    <p class="category">${data.cate} <i class="bi bi-card-image"></i> ${imageCount}, Video: ${videoCount}</p>
+                    <p class="category">${data.cate}: <i class="bi bi-card-image"></i> ${imageCount}, <i class="bi bi-camera-video"></i> ${videoCount}</p>
                 `;
                 item.style.cursor = 'pointer';
                 item.onclick = () => window.location.href = 'view/index.html?id=' + doc.id;
