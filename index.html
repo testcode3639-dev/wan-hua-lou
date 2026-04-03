@@ -140,7 +140,7 @@
                 item.className = 'content-item';
                 const thumbUrl = data.thumb || (data.img && Array.isArray(data.img) && data.img.length > 0 ? data.img[0].url : '');
                 const imageCount = data.img && Array.isArray(data.img) ? data.img.length : 0;
-                const videoCount = data.video && Array.isArray(data.video) ? data.video.length : 0;
+                const videoCount = data.vid && Array.isArray(data.vid) ? data.vid.length : 0;
                 item.innerHTML = `
                     <h3>${data.title}</h3>
                     ${thumbUrl ? `<img src="${thumbUrl}" alt="Image" onload="adjustImage(this)">` : ''}
