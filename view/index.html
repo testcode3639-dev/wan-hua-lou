@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vạn Hoa Lầu</title>
-    <link rel="icon" href="logo.png">
+    <link rel="icon" href="../logo.png">
     <style>
         @font-face {
             font-family: 'VNI Thuphap Vniongdo';
-            src: url('vni.thuphap.vniongdo.ttf') format('truetype');
+            src: url('../vni.thuphap.vniongdo.ttf') format('truetype');
         }
 
         body {
@@ -66,17 +66,12 @@
             background: transparent;
             border-radius: 10px;
             padding: 20px;
-            width: 300px;
+            width: 100%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             transition: all 0.3s ease;
         }
 
-        .content-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
-        }
-
-        .content-item h3 {
+        .content-item h1 {
             margin-top: 0;
             color: #fff;
         }
@@ -85,6 +80,12 @@
             max-width: 100%;
             height: auto;
             border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .content-item video {
+            max-width: 100%;
+            margin: 10px 0;
         }
 
         .content-item p {
@@ -101,7 +102,7 @@
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCEU_hkazFaQ47eBcWglU0QZr5N4i_XPFk",
@@ -116,37 +117,44 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function loadContents() {
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
             const contentContainer = document.getElementById('content-container');
-            contentContainer.innerHTML = '';
-            const querySnapshot = await getDocs(collection(db, 'content'));
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const item = document.createElement('div');
-                item.className = 'content-item';
-                item.innerHTML = `
-                    <h3>${data.title}</h3>
-                    <p>${data.info}</p>
-                    ${data.img && (Array.isArray(data.img) ? data.img.length > 0 : data.img) ? `<img src="${Array.isArray(data.img) ? data.img[0].url : data.img}" alt="Image">` : ''}
-                    ${data.vid && (Array.isArray(data.vid) ? data.vid.length > 0 : data.vid) ? `<p><a href="${Array.isArray(data.vid) ? data.vid[0].url : data.vid}" target="_blank">Watch Video</a></p>` : ''}
-                    <p class="category">${data.cate}</p>
-                `;
-                item.style.cursor = 'pointer';
-                item.onclick = () => window.location.href = 'view/index.html?id=' + doc.id;
-                contentContainer.appendChild(item);
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', loadContents);
+            if (id) {
+                const docRef = doc(db, 'content', id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    contentContainer.innerHTML = `
+                        <div class="content-item">
+                            <h1>${data.title}</h1>
+                            <p>${data.info}</p>
+                            <div class="images">
+                                ${data.img ? data.img.map(img => `<img src="${img.url}" alt="Image">`).join('') : ''}
+                            </div>
+                            <div class="videos">
+                                ${data.vid ? data.vid.map(vid => `<video controls><source src="${vid.url}" type="video/mp4"></video>`).join('') : ''}
+                            </div>
+                            <p class="category">${data.cate}</p>
+                        </div>
+                    `;
+                } else {
+                    contentContainer.innerHTML = '<p>Content not found.</p>';
+                }
+            } else {
+                contentContainer.innerHTML = '<p>No id provided.</p>';
+            }
+        });
     </script>
 </head>
 <body>
     <video id="background-video" autoplay muted loop>
-        <source src="background.mp4" type="video/mp4">
+        <source src="../background.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
     <div id="header">
-        <img id="logo" src="logo.png" alt="Logo">
+        <img id="logo" src="../logo.png" alt="Logo">
         <div id="label">Vaïn Hoa Laâu</div>
     </div>
     <div id="content-container">
