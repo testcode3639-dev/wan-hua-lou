@@ -168,17 +168,11 @@
         }
 
         function adjustImage(img) {
-            const aspectRatio = img.naturalWidth / img.naturalHeight;
-            const targetWidth = window.innerWidth * 0.45;
-            const targetHeight = targetWidth / aspectRatio;
-            if (targetHeight > window.innerHeight) {
-                img.style.height = '80vh';
-                img.style.width = 'auto';
-            } else {
-                img.style.width = '45vw';
-                img.style.height = 'auto';
-            }
+            img.style.height = '80vh';
+            img.style.width = 'auto';
         }
+
+        window.adjustImage = adjustImage;
 
 
         document.addEventListener('DOMContentLoaded', loadContents);
