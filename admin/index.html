@@ -9,7 +9,7 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #000;
+    background-color: transparent;
     color: #fff;
     margin: 20px;
     transition: all 0.3s ease;
@@ -26,7 +26,7 @@ body {
     border: 1px solid #333;
     padding: 15px;
     margin: 0;
-    background-color: #111;
+    background-color: rgba(0,0,0,0.5);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
@@ -56,7 +56,7 @@ input, textarea, select, button {
     margin: 8px 0;
     width: 100%;
     padding: 12px;
-    background-color: #222;
+    background-color: rgba(0,0,0,0.5);
     color: #fff;
     border: 1px solid #555;
     border-radius: 6px;
@@ -81,7 +81,7 @@ button:hover {
 }
 
 .edit-btn {
-    background-color: #ffc107;
+    background-color: rgba(255,193,7,0.5) !important;
     color: #000;
 }
 
@@ -90,7 +90,7 @@ button:hover {
 }
 
 .delete-btn {
-    background-color: #dc3545;
+    background-color: rgba(220,53,69,0.5) !important;
     color: #fff;
 }
 
@@ -106,7 +106,7 @@ button:hover {
 }
 
 .add-btn {
-    background-color: #28a745;
+    background-color: rgba(40,167,69,0.5) !important;
     color: #fff;
 }
 
@@ -125,7 +125,7 @@ button:hover {
 }
 
 .cancel-btn {
-    background-color: #6c757d;
+    background-color: rgba(108,117,125,0.5) !important;
     color: #fff;
 }
 
@@ -138,7 +138,7 @@ button:hover {
     padding: 30px;
     width: 320px;
     margin: 100px auto;
-    background-color: #111;
+    background-color: rgba(0,0,0,0.5);
     border-radius: 10px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
     transition: all 0.3s ease;
@@ -175,7 +175,7 @@ button:hover {
 .login-form button {
     padding: 12px;
     width: 100%;
-    background-color: #007bff;
+    background-color: rgba(0,123,255,0.5);
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -274,8 +274,8 @@ h1 {
         <h1>Manage Collection</h1>
     <div class="header-actions">
         <input type="text" id="search-input" placeholder="Search by title..." style="padding: 10px; border: 1px solid #555; border-radius: 5px; background-color: #222; color: #fff; width: 400px;">
-        <button type="button" id="search-btn" style="padding: 5px 10px; border: 1px solid #555; border-radius: 5px; background-color: #007bff; color: #fff; cursor: pointer; width: 120px;">Search</button>
-        <button type="button" onclick="showForm()" class="add-btn" style="background-color: #28a745 !important; color: #fff !important; padding: 5px 10px; border: 2px solid #000 !important; border-radius: 5px; cursor: pointer; width: 120px;">Add content</button>
+        <button type="button" id="search-btn" style="padding: 5px 10px; border: 1px solid #555; border-radius: 5px; background-color: rgba(0,123,255,0.5); color: #fff; cursor: pointer; width: 120px;">Search</button>
+        <button type="button" onclick="showForm()" class="add-btn" style="background-color: rgba(40,167,69,0.5) !important; color: #fff !important; padding: 5px 10px; border: 2px solid #000 !important; border-radius: 5px; cursor: pointer; width: 120px;">Add content</button>
     </div>
     <div id="content-list"></div>
 
@@ -305,7 +305,7 @@ h1 {
 
     <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCEU_hkazFaQ47eBcWglU0QZr5N4i_XPFk",
@@ -346,16 +346,26 @@ const cateField = document.getElementById('cate');
 
 async function checkLogin(username, password) {
     try {
-        const docRef = doc(window.db, 'admin', 'account');
+        console.log('Username:', username);
+        console.log('Password:', password);
+        const docRef = doc(window.db, 'role', username);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
-            if (data.user === username && data.password === password) {
+            console.log('Found data:', data);
+            console.log('Password in DB:', data.password);
+            if (data.password === password) {
+                console.log('Login successful');
                 return true;
+            } else {
+                console.log('Password mismatch');
             }
+        } else {
+            console.log('No document found for username:', username);
         }
         return false;
     } catch (error) {
+        console.log('Error in checkLogin:', error);
         return false;
     }
 }
@@ -369,7 +379,7 @@ authForm.addEventListener('submit', async (e) => {
         mainContent.style.display = 'block';
         loadContents();
     } else {
-        loginError.textContent = 'Incorrect username or password';
+        loginError.textContent = 'Invalid role or password';
         loginError.style.display = 'block';
     }
 });
@@ -398,32 +408,34 @@ async function loadContents() {
             item.innerHTML = `
                 <h3>${data.title}</h3>
             `;
-            const editBtn = document.createElement('button');
-            editBtn.className = 'edit-btn';
-            editBtn.textContent = 'Edit';
-            editBtn.addEventListener('click', () => {
-                editContent(
-                    doc.id,
-                    data.title,
-                    data.info,
-                    data.img || [],
-                    data.vid || [],
-                    data.cate,
-                    data.thumb || ''
-                );
-            });
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-btn';
-            deleteBtn.textContent = 'Delete';
-            deleteBtn.addEventListener('click', () => {
-                deleteContent(doc.id);
-            });
-            const buttonContainer = document.createElement('div');
-            buttonContainer.style.display = 'flex';
-            buttonContainer.style.gap = '10px';
-            buttonContainer.appendChild(editBtn);
-            buttonContainer.appendChild(deleteBtn);
-            item.appendChild(buttonContainer);
+            if (window.currentUser === 'admin') {
+                const editBtn = document.createElement('button');
+                editBtn.className = 'edit-btn';
+                editBtn.textContent = 'Edit';
+                editBtn.addEventListener('click', () => {
+                    editContent(
+                        doc.id,
+                        data.title,
+                        data.info,
+                        data.img || [],
+                        data.vid || [],
+                        data.cate,
+                        data.thumb || ''
+                    );
+                });
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.addEventListener('click', () => {
+                    deleteContent(doc.id);
+                });
+                const buttonContainer = document.createElement('div');
+                buttonContainer.style.display = 'flex';
+                buttonContainer.style.gap = '10px';
+                buttonContainer.appendChild(editBtn);
+                buttonContainer.appendChild(deleteBtn);
+                item.appendChild(buttonContainer);
+            }
             contentList.appendChild(item);
         }
     });
