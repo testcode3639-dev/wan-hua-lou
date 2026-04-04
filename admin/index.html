@@ -15,10 +15,17 @@ body {
     transition: all 0.3s ease;
 }
 
+#content-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
 .content-item {
+    flex: 1 1 300px;
     border: 1px solid #333;
     padding: 15px;
-    margin: 15px 0;
+    margin: 0;
     background-color: #111;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
@@ -225,7 +232,7 @@ h1 {
         <div id="login-error" style="color: red; display: none;"></div>
     </div>
     <div id="main-content" class="main-content">
-        <h1>Manage Collection "content"</h1>
+        <h1>Manage Collection</h1>
     <button type="button" onclick="showForm()" class="add-btn" style="background-color: #28a745 !important; color: #fff !important; padding: 10px 20px; border: 2px solid #000 !important; border-radius: 5px; cursor: pointer;">Add content</button>
     <div id="content-list"></div>
 
