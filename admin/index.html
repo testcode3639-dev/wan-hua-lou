@@ -238,8 +238,10 @@ h1 {
     background: red;
     color: white;
     border: none;
-    padding: 2px;
+    padding: 1px;
     cursor: pointer;
+    width: auto;
+    height: auto;
 }
 
 .images, .videos {
@@ -571,13 +573,13 @@ globalThis.renderExistingMedia = function() {
             const isChecked = img.url === currentThumb;
             const item = document.createElement('div');
             item.className = 'media-item existing';
-            item.innerHTML = `<img src="${img.url}" alt="Image"><input type="radio" name="thumb" value="${img.url}" ${isChecked ? 'checked' : ''}><button type="button" onclick="removeImage(${index})">Delete</button>`;
+            item.innerHTML = `<img src="${img.url}" alt="Image"><input type="radio" name="thumb" value="${img.url}" ${isChecked ? 'checked' : ''}><button type="button" onclick="removeImage(${index})"><i class="bi bi-trash"></i></button>`;
             container.appendChild(item);
         });
         uploadedVideos.forEach((vid, index) => {
             const item = document.createElement('div');
             item.className = 'media-item existing';
-            item.innerHTML = `<video controls><source src="${vid.url}" type="video/mp4"></video><button type="button" onclick="removeVideo(${index})">Delete</button>`;
+            item.innerHTML = `<video controls><source src="${vid.url}" type="video/mp4"></video><button type="button" onclick="removeVideo(${index})"><i class="bi bi-trash"></i></button>`;
             container.appendChild(item);
         });
     }
