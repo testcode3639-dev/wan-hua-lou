@@ -30,6 +30,20 @@
             z-index: 10;
         }
 
+        #search {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            z-index: 10;
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #000;
+        }
+
         #logo {
             width: 120px;
             height: auto;
@@ -145,10 +159,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        let allItems = [];
+
         async function loadContents() {
             const contentContainer = document.getElementById('content-container');
             contentContainer.innerHTML = '';
             const querySnapshot = await getDocs(query(collection(db, 'content'), orderBy('updatedAt', 'desc')));
+            allItems = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 const item = document.createElement('div');
@@ -163,8 +180,23 @@
                 `;
                 item.style.cursor = 'pointer';
                 item.onclick = () => window.location.href = 'view/index.html?id=' + doc.id;
-                contentContainer.appendChild(item);
+                allItems.push({element: item, title: data.title, info: data.cate + ' ' + imageCount + ' ' + videoCount});
             });
+            displayItems(allItems);
+        }
+
+        function displayItems(items) {
+            const container = document.getElementById('content-container');
+            container.innerHTML = '';
+            items.forEach(item => container.appendChild(item.element));
+        }
+
+        function filterItems() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const filtered = allItems.filter(item =>
+                item.title.toLowerCase().includes(query) || item.info.toLowerCase().includes(query)
+            );
+            displayItems(filtered);
         }
 
         function adjustImage(img) {
@@ -175,7 +207,10 @@
         window.adjustImage = adjustImage;
 
 
-        document.addEventListener('DOMContentLoaded', loadContents);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadContents();
+            document.getElementById('search').addEventListener('input', filterItems);
+        });
 
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;
@@ -204,6 +239,7 @@
         <img id="logo" src="logo.png" alt="Logo">
         <div id="label">Vaïn Hoa Laâu</div>
     </div>
+    <input id="search" placeholder="Tìm kiếm theo title hoặc info">
     <div id="content-container">
         <!-- Content will be loaded here -->
     </div>
