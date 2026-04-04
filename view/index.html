@@ -110,6 +110,28 @@
             display: inline-block;
         }
 
+        @media (max-width: 768px) {
+            .content-item img, .content-item video {
+                max-width: 90vw;
+                max-height: 75vh;
+                object-fit: contain;
+            }
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -149,6 +171,44 @@
                             </div>
                         </div>
                     `;
+                    const overlay = document.getElementById('loading-overlay');
+                    overlay.style.display = 'flex';
+                    const images = contentContainer.querySelectorAll('img');
+                    const videos = contentContainer.querySelectorAll('video');
+                    let loadedCount = 0;
+                    const total = images.length + videos.length;
+                    if (total === 0) {
+                        overlay.style.display = 'none';
+                    } else {
+                        images.forEach(img => {
+                            img.onload = () => {
+                                loadedCount++;
+                                if (loadedCount === total) {
+                                    overlay.style.display = 'none';
+                                }
+                            };
+                            img.onerror = () => {
+                                loadedCount++;
+                                if (loadedCount === total) {
+                                    overlay.style.display = 'none';
+                                }
+                            };
+                        });
+                        videos.forEach(video => {
+                            video.onloadeddata = () => {
+                                loadedCount++;
+                                if (loadedCount === total) {
+                                    overlay.style.display = 'none';
+                                }
+                            };
+                            video.onerror = () => {
+                                loadedCount++;
+                                if (loadedCount === total) {
+                                    overlay.style.display = 'none';
+                                }
+                            };
+                        });
+                    }
                 } else {
                     contentContainer.innerHTML = '<p>Content not found.</p>';
                 }
@@ -218,6 +278,9 @@
     </div>
     <div id="content-container">
         <!-- Content will be loaded here -->
+    </div>
+    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; color: #fff; font-size: 16px;">
+        <div class="spinner"></div>
     </div>
 </body>
 </html>
