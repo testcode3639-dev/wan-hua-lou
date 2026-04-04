@@ -397,6 +397,7 @@ globalThis.editContent = function(id, title, info, img, vid, cate, thumb) {
     console.log('uploadedImages:', uploadedImages);
     renderExistingMedia();
     contentForm.style.display = 'block';
+    document.getElementById('content-form').scrollIntoView({ behavior: 'smooth' });
 };
 
 globalThis.deleteContent = async function(id) {
@@ -415,6 +416,7 @@ globalThis.showForm = function() {
     renderExistingMedia();
     document.getElementById('preview-selected').innerHTML = '';
     contentForm.style.display = 'block';
+    document.getElementById('content-form').scrollIntoView({ behavior: 'smooth' });
 };
 
 globalThis.cancelForm = function() {
