@@ -20,6 +20,7 @@
             font-family: 'Roboto', sans-serif;
             color: #fff;
             overflow-x: hidden;
+            background: #000000;
         }
 
         #header {
@@ -42,15 +43,6 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
 
-        #background-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
 
         #content-container {
             position: relative;
@@ -117,6 +109,7 @@
             border-radius: 5px;
             display: inline-block;
         }
+
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -169,13 +162,50 @@
             element.style.width = 'auto';
         }
         window.adjustMedia = adjustMedia;
+
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+
+        function createParticle() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                color: Math.random() > 0.5 ? `rgba(255,0,255,${Math.random() * 0.8 + 0.2})` : `rgba(255,0,0,${Math.random() * 0.8 + 0.2})`,
+                size: Math.random() * 3 + 1
+            };
+        }
+
+        for (let i = 0; i < 100; i++) {
+            particles.push(createParticle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        animate();
     </script>
 </head>
 <body>
-    <video id="background-video" autoplay muted loop>
-        <source src="background.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <canvas id="particleCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1;"></canvas>
     <div id="header">
         <img id="logo" src="../logo.png" alt="Logo" onclick="window.location.href='../index.html'">
     </div>
