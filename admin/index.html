@@ -326,9 +326,29 @@ async function loadContents() {
         item.innerHTML = `
             <h3>${data.title}</h3>
             <p>${data.info}</p>
-            <button class="edit-btn" onclick='editContent("${doc.id}", "${data.title}", "${data.info}", ${JSON.stringify(data.img || [])}, ${JSON.stringify(data.vid || [])}, "${data.cate}", "${data.thumb || ''}")'>Edit</button>
-            <button class="delete-btn" onclick='deleteContent("${doc.id}")'>Delete</button>
         `;
+        const editBtn = document.createElement('button');
+        editBtn.className = 'edit-btn';
+        editBtn.textContent = 'Edit';
+        editBtn.addEventListener('click', () => {
+            editContent(
+                doc.id,
+                data.title,
+                data.info,
+                data.img || [],
+                data.vid || [],
+                data.cate,
+                data.thumb || ''
+            );
+        });
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => {
+            deleteContent(doc.id);
+        });
+        item.appendChild(editBtn);
+        item.appendChild(deleteBtn);
         contentList.appendChild(item);
     });
 }
