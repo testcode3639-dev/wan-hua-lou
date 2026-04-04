@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vạn Hoa Lầu</title>
     <link rel="icon" href="../logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Shalimar&display=swap" rel="stylesheet">
     <style>
         @font-face {
             font-family: 'VNI Thuphap Vniongdo';
@@ -54,7 +55,7 @@
         #content-container {
             position: relative;
             z-index: 5;
-            padding: 40px 20px 20px;
+            padding: 10px 20px 20px;
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
@@ -73,6 +74,8 @@
         .content-item h1 {
             margin-top: 0;
             color: #fff;
+            font-family: 'Shalimar', cursive;
+            font-size: 28px;
         }
 
         .content-item .images, .content-item .videos {
@@ -94,6 +97,8 @@
 
         .content-item p {
             margin: 10px 0;
+            font-family: 'Shalimar', cursive;
+            font-size: 28px;
         }
 
         .category {
@@ -133,7 +138,7 @@
                     contentContainer.innerHTML = `
                         <div class="content-item">
                             <h1>${data.title}</h1>
-                            <p>${data.info}</p>
+                            <p>${data.info.replace(/\n/g, '<br>')}</p>
                             <div class="videos">
                                 ${data.vid ? data.vid.map(vid => `<video controls><source src="${vid.url}" type="video/mp4"></video>`).join('') : ''}
                             </div>
