@@ -187,12 +187,14 @@
 
         function renderSubcategoryFilters() {
             const container = document.getElementById('subcategory-filter');
-            container.innerHTML = '<h4 style="color: #fff; margin: 0 0 10px 0;">Thể loại</h4>';
+            container.innerHTML = '<h4 style="color: #fff; margin: 0 0 10px 0; font-family: \'Shalimar\', cursive; font-weight: normal; font-size: 28px;">Thể loại</h4>';
             subcategories.forEach(sub => {
                 const label = document.createElement('label');
                 label.style.display = 'block';
                 label.style.color = '#fff';
                 label.style.margin = '5px 0';
+                label.style.fontFamily = "'Shalimar', cursive";
+                label.style.fontSize = "28px";
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.value = sub.id;
