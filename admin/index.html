@@ -98,6 +98,12 @@ button:hover {
     background-color: #c82333;
 }
 
+.header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 .add-btn {
     background-color: #28a745;
     color: #fff;
@@ -262,7 +268,11 @@ h1 {
     </div>
     <div id="main-content" class="main-content">
         <h1>Manage Collection</h1>
-    <button type="button" onclick="showForm()" class="add-btn" style="background-color: #28a745 !important; color: #fff !important; padding: 10px 20px; border: 2px solid #000 !important; border-radius: 5px; cursor: pointer;">Add content</button>
+    <div class="header-actions">
+        <input type="text" id="search-input" placeholder="Search by title..." style="padding: 10px; border: 1px solid #555; border-radius: 5px; background-color: #222; color: #fff; width: 200px;">
+        <button type="button" id="search-btn" style="padding: 10px 20px; border: 1px solid #555; border-radius: 5px; background-color: #007bff; color: #fff; cursor: pointer;">Search</button>
+        <button type="button" onclick="showForm()" class="add-btn" style="background-color: #28a745 !important; color: #fff !important; padding: 10px 20px; border: 2px solid #000 !important; border-radius: 5px; cursor: pointer;">Add content</button>
+    </div>
     <div id="content-list"></div>
 
     <form id="content-form" style="display: none">
@@ -353,49 +363,62 @@ authForm.addEventListener('submit', async (e) => {
     if (await checkLogin(username, password)) {
         loginForm.style.display = 'none';
         mainContent.style.display = 'block';
+        loadContents();
     } else {
         loginError.textContent = 'Incorrect username or password';
         loginError.style.display = 'block';
     }
 });
 
+const searchBtn = document.getElementById('search-btn');
+searchBtn.addEventListener('click', () => {
+    loadContents();
+});
+
 async function loadContents() {
     contentList.innerHTML = '';
+    const searchTerm = document.getElementById('search-input').value.trim().toLowerCase();
+    console.log('Search term:', searchTerm);
     const querySnapshot = await getDocs(collection(window.db, 'content'));
+    console.log('Query snapshot size:', querySnapshot.size);
     querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const item = document.createElement('div');
-        item.className = 'content-item';
-        item.innerHTML = `
-            <h3>${data.title}</h3>
-        `;
-        const editBtn = document.createElement('button');
-        editBtn.className = 'edit-btn';
-        editBtn.textContent = 'Edit';
-        editBtn.addEventListener('click', () => {
-            editContent(
-                doc.id,
-                data.title,
-                data.info,
-                data.img || [],
-                data.vid || [],
-                data.cate,
-                data.thumb || ''
-            );
-        });
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.addEventListener('click', () => {
-            deleteContent(doc.id);
-        });
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.display = 'flex';
-        buttonContainer.style.gap = '10px';
-        buttonContainer.appendChild(editBtn);
-        buttonContainer.appendChild(deleteBtn);
-        item.appendChild(buttonContainer);
-        contentList.appendChild(item);
+        console.log('Item data:', data);
+        if (data.title && data.title.toLowerCase().trim().includes(searchTerm)) {
+            console.log('Matching item:', data.title);
+            const item = document.createElement('div');
+            item.className = 'content-item';
+            item.innerHTML = `
+                <h3>${data.title}</h3>
+            `;
+            const editBtn = document.createElement('button');
+            editBtn.className = 'edit-btn';
+            editBtn.textContent = 'Edit';
+            editBtn.addEventListener('click', () => {
+                editContent(
+                    doc.id,
+                    data.title,
+                    data.info,
+                    data.img || [],
+                    data.vid || [],
+                    data.cate,
+                    data.thumb || ''
+                );
+            });
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.addEventListener('click', () => {
+                deleteContent(doc.id);
+            });
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.display = 'flex';
+            buttonContainer.style.gap = '10px';
+            buttonContainer.appendChild(editBtn);
+            buttonContainer.appendChild(deleteBtn);
+            item.appendChild(buttonContainer);
+            contentList.appendChild(item);
+        }
     });
 }
 
@@ -451,6 +474,13 @@ globalThis.deleteContent = async function(id) {
     if (confirm('Are you sure you want to delete?')) {
         await deleteDoc(doc(window.db, 'content', id));
         loadContents();
+        
+        const searchBtn = document.getElementById('search-btn');
+        console.log('Search button found:', searchBtn);
+        searchBtn.addEventListener('click', () => {
+            console.log('Search button clicked');
+            loadContents();
+        });
     }
 };
 
@@ -546,7 +576,6 @@ contentForm.addEventListener('submit', async (e) => {
     document.getElementById('loading-overlay').style.display = 'none';
 });
 
-loadContents();
     </script>
 </body>
 </html>
