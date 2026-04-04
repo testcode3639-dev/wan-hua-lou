@@ -86,7 +86,7 @@
         }
 
         .content-item img, .content-item video {
-            width: 45vw;
+            width: 90vw;
             height: auto;
             border-radius: 5px;
             margin: 0 0 10px 0;
@@ -136,10 +136,10 @@
                             <h1>${data.title}</h1>
                             <p>${data.info}</p>
                             <div class="videos">
-                                ${data.vid ? data.vid.map(vid => `<video controls><source src="${vid.url}" type="video/mp4"></video>`).join('') : ''}
+                                ${data.vid ? data.vid.map(vid => `<video controls onload="adjustMedia(this)"><source src="${vid.url}" type="video/mp4"></video>`).join('') : ''}
                             </div>
                             <div class="images">
-                                ${data.img ? data.img.map(img => `<img src="${img.url}" alt="Image">`).join('') : ''}
+                                ${data.img ? data.img.map(img => `<img src="${img.url}" alt="Image" onload="adjustMedia(this)">`).join('') : ''}
                             </div>
                         </div>
                     `;
@@ -150,6 +150,15 @@
                 contentContainer.innerHTML = '<p>No id provided.</p>';
             }
         });
+
+        function adjustMedia(element) {
+            element.style.width = '90vw';
+            element.style.height = 'auto';
+            if (element.offsetHeight > window.innerHeight) {
+                element.style.height = '90vh';
+                element.style.width = 'auto';
+            }
+        }
     </script>
 </head>
 <body>

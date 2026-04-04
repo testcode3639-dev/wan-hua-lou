@@ -459,7 +459,8 @@ contentForm.addEventListener('submit', async (e) => {
         img: uploadedImages,
         vid: uploadedVideos,
         cate: cateField.value,
-        thumb: thumbUrl
+        thumb: thumbUrl,
+        updatedAt: new Date().toISOString()
     };
     if (docIdField.value) {
         await updateDoc(doc(window.db, 'content', docIdField.value), data);
