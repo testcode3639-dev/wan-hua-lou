@@ -375,17 +375,20 @@ searchBtn.addEventListener('click', () => {
     loadContents();
 });
 
+const searchInput = document.getElementById('search-input');
+searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        loadContents();
+    }
+});
+
 async function loadContents() {
     contentList.innerHTML = '';
     const searchTerm = document.getElementById('search-input').value.trim().toLowerCase();
-    console.log('Search term:', searchTerm);
     const querySnapshot = await getDocs(collection(window.db, 'content'));
-    console.log('Query snapshot size:', querySnapshot.size);
     querySnapshot.forEach((doc) => {
         const data = doc.data();
-        console.log('Item data:', data);
         if (data.title && data.title.toLowerCase().trim().includes(searchTerm)) {
-            console.log('Matching item:', data.title);
             const item = document.createElement('div');
             item.className = 'content-item';
             item.innerHTML = `
@@ -427,10 +430,8 @@ globalThis.renderExistingMedia = function() {
     if (container) {
         const existingItems = container.querySelectorAll('.existing');
         existingItems.forEach(item => item.remove());
-        console.log('Rendering with currentThumb:', currentThumb);
         uploadedImages.forEach((img, index) => {
             const isChecked = img.url === currentThumb;
-            console.log(`Image ${img.url}: checked=${isChecked}`);
             const item = document.createElement('div');
             item.className = 'media-item existing';
             item.innerHTML = `<img src="${img.url}" alt="Image"><input type="radio" name="thumb" value="${img.url}" ${isChecked ? 'checked' : ''}><button type="button" onclick="removeImage(${index})">Delete</button>`;
@@ -463,8 +464,6 @@ globalThis.editContent = function(id, title, info, img, vid, cate, thumb) {
     uploadedVideos = vid || [];
     cateField.value = cate;
     currentThumb = thumb;
-    console.log('Editing with thumb:', thumb);
-    console.log('uploadedImages:', uploadedImages);
     renderExistingMedia();
     contentForm.style.display = 'block';
     document.getElementById('content-form').scrollIntoView({ behavior: 'smooth' });
@@ -476,16 +475,13 @@ globalThis.deleteContent = async function(id) {
         loadContents();
         
         const searchBtn = document.getElementById('search-btn');
-        console.log('Search button found:', searchBtn);
         searchBtn.addEventListener('click', () => {
-            console.log('Search button clicked');
             loadContents();
         });
     }
 };
 
 globalThis.showForm = function() {
-    console.log('showForm called');
     contentForm.reset();
     docIdField.value = '';
     uploadedImages = [];
@@ -548,9 +544,7 @@ contentForm.addEventListener('submit', async (e) => {
     }
     await uploadMedia();
     const checkedRadio = document.querySelector('input[name="thumb"]:checked');
-    console.log('Checked radio:', checkedRadio);
     const thumbUrl = checkedRadio ? checkedRadio.value : '';
-    console.log('thumbUrl:', thumbUrl);
     const data = {
         title: titleField.value,
         info: infoField.value,
