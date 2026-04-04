@@ -170,12 +170,19 @@
         let particles = [];
 
         function createParticle() {
+            const colorOptions = [
+                () => `rgba(0,255,0,${Math.random() * 0.8 + 0.2})`, // green
+                () => `rgba(255,255,0,${Math.random() * 0.8 + 0.2})`, // yellow
+                () => `rgba(0,0,255,${Math.random() * 0.8 + 0.2})`,  // blue
+                () => `rgba(255,0,0,${Math.random() * 0.8 + 0.2})`,  // red
+                () => `rgba(128,0,128,${Math.random() * 0.8 + 0.2})`   // purple
+            ];
             return {
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
                 vx: (Math.random() - 0.5) * 2,
                 vy: (Math.random() - 0.5) * 2,
-                color: Math.random() > 0.5 ? `rgba(255,0,255,${Math.random() * 0.8 + 0.2})` : `rgba(255,0,0,${Math.random() * 0.8 + 0.2})`,
+                color: colorOptions[Math.floor(Math.random() * colorOptions.length)](),
                 size: Math.random() * 3 + 1
             };
         }
