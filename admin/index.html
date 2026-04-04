@@ -277,12 +277,17 @@ h1 {
             <option value="Châu Á">Châu Á</option>
             <option value="Manhwa/Manga">Manhwa/Manga</option>
         </select>
-        <div id="upload-spinner"><div class="spinner"></div>Uploading...</div>
         <div class="button-group">
             <button type="submit" class="add-btn">Submit</button>
             <button type="button" onclick="cancelForm()" class="cancel-btn">Cancel</button>
         </div>
     </form>
+
+<div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; color: #fff; font-size: 16px;">
+
+    <div class="spinner"></div>
+
+</div>
 
     <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -384,8 +389,12 @@ async function loadContents() {
         deleteBtn.addEventListener('click', () => {
             deleteContent(doc.id);
         });
-        item.appendChild(editBtn);
-        item.appendChild(deleteBtn);
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.gap = '10px';
+        buttonContainer.appendChild(editBtn);
+        buttonContainer.appendChild(deleteBtn);
+        item.appendChild(buttonContainer);
         contentList.appendChild(item);
     });
 }
@@ -502,7 +511,7 @@ contentForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    document.getElementById('upload-spinner').style.display = 'block';
+    document.getElementById('loading-overlay').style.display = 'flex';
     if (!docIdField.value) {
         uploadedImages = [];
         uploadedVideos = [];
@@ -534,7 +543,7 @@ contentForm.addEventListener('submit', async (e) => {
     loadContents();
     contentForm.style.display = 'none';
     submitBtn.disabled = false;
-    document.getElementById('upload-spinner').style.display = 'none';
+    document.getElementById('loading-overlay').style.display = 'none';
 });
 
 loadContents();
