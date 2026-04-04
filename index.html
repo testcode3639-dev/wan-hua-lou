@@ -30,18 +30,31 @@
             z-index: 10;
         }
 
-        #search {
+        #search-container {
             position: fixed;
             top: 80px;
-            left: 20px;
+            right: 20px;
             z-index: 10;
-            padding: 10px;
-            font-size: 16px;
-            width: 250px;
-            border: none;
+            display: flex;
+            align-items: center;
+            background: transparent;
+            border: 1px solid #fff;
             border-radius: 5px;
-            background: rgba(255, 255, 255, 0.8);
-            color: #000;
+            padding: 5px 10px;
+        }
+
+        #search-container i {
+            color: #fff;
+            margin-right: 5px;
+        }
+
+        #search {
+            padding: 5px;
+            font-size: 16px;
+            width: 200px;
+            border: none;
+            background: transparent;
+            color: #fff;
         }
 
         #logo {
@@ -180,7 +193,7 @@
                 `;
                 item.style.cursor = 'pointer';
                 item.onclick = () => window.location.href = 'view/index.html?id=' + doc.id;
-                allItems.push({element: item, title: data.title, info: data.cate + ' ' + imageCount + ' ' + videoCount});
+                allItems.push({element: item, title: data.title});
             });
             displayItems(allItems);
         }
@@ -194,7 +207,7 @@
         function filterItems() {
             const query = document.getElementById('search').value.toLowerCase();
             const filtered = allItems.filter(item =>
-                item.title.toLowerCase().includes(query) || item.info.toLowerCase().includes(query)
+                item.title.toLowerCase().includes(query)
             );
             displayItems(filtered);
         }
@@ -239,7 +252,10 @@
         <img id="logo" src="logo.png" alt="Logo">
         <div id="label">Vaïn Hoa Laâu</div>
     </div>
-    <input id="search" placeholder="Tìm kiếm theo title hoặc info">
+    <div id="search-container">
+        <i class="bi bi-search"></i>
+        <input id="search" placeholder="Tìm kiếm theo title">
+    </div>
     <div id="content-container">
         <!-- Content will be loaded here -->
     </div>

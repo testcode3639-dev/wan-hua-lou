@@ -306,7 +306,7 @@ h1 {
 
     <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCEU_hkazFaQ47eBcWglU0QZr5N4i_XPFk",
@@ -401,7 +401,7 @@ searchInput.addEventListener('keypress', (e) => {
 async function loadContents() {
     contentList.innerHTML = '';
     const searchTerm = document.getElementById('search-input').value.trim().toLowerCase();
-    const querySnapshot = await getDocs(collection(window.db, 'content'));
+    const querySnapshot = await getDocs(query(collection(window.db, 'content'), orderBy('updatedAt', 'desc')));
     querySnapshot.forEach((doc) => {
         const data = doc.data();
         if (data.title && data.title.toLowerCase().trim().includes(searchTerm)) {
