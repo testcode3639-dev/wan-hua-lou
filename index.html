@@ -228,7 +228,7 @@
                 item.innerHTML = `
                     <h3>${data.title}</h3>
                     ${thumbUrl ? `<img src="${thumbUrl}" alt="Image" onload="adjustImage(this)">` : ''}
-                    <p class="category"><i class="bi bi-card-image"></i> ${imageCount}, <i class="bi bi-camera-video"></i> ${videoCount}</p>
+                    <p class="category"><i class="bi bi-card-image"></i> ${imageCount}, <i class="bi bi-camera-video"></i> ${videoCount}<br><i class="bi bi-calendar4-week"></i> ${(() => { const d = new Date(data.updatedAt); return d.getFullYear() + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + String(d.getDate()).padStart(2, '0') + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); })()}</p>
                 `;
                 item.style.cursor = 'pointer';
                 item.onclick = () => window.location.href = 'view/index.html?id=' + doc.id;
