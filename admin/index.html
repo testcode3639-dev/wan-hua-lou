@@ -375,6 +375,7 @@ authForm.addEventListener('submit', async (e) => {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     if (await checkLogin(username, password)) {
+        window.currentUser = username;
         loginForm.style.display = 'none';
         mainContent.style.display = 'block';
         loadContents();
