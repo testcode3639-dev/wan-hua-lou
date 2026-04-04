@@ -113,6 +113,13 @@
             text-align: center;
         }
     </style>
+    <script>
+        window.adjustMedia = function(element) {
+            console.log('Adjusting media for:', element);
+            element.style.height = '75vh';
+            element.style.width = 'auto';
+        };
+    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -164,6 +171,12 @@
                 img.style.height = 'auto';
             }
         }
+
+        window.adjustMedia = function(element) {
+            console.log('Adjusting media for:', element);
+            element.style.height = '75vh';
+            element.style.width = 'auto';
+        };
 
         document.addEventListener('DOMContentLoaded', loadContents);
 

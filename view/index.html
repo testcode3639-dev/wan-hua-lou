@@ -152,12 +152,9 @@
         });
 
         function adjustMedia(element) {
-            element.style.width = '90vw';
-            element.style.height = 'auto';
-            if (element.offsetHeight > window.innerHeight) {
-                element.style.height = '90vh';
-                element.style.width = 'auto';
-            }
+            console.log('Adjusting media for:', element);
+            element.style.height = '75vh';
+            element.style.width = 'auto';
         }
     </script>
 </head>
