@@ -271,14 +271,15 @@ h1 {
         <div id="login-error" style="color: red; display: none;"></div>
     </div>
     <div id="main-content" class="main-content">
-    <div class="header-actions">
+    <div class="header-actions" style="margin-top: 60px;">
         <input type="text" id="search-input" placeholder="Search by title..." style="padding: 10px; border: 1px solid #555; border-radius: 5px; background-color: #222; color: #fff; width: 400px;">
         <button type="button" id="search-btn" style="padding: 5px 10px; border: 1px solid #555; border-radius: 5px; background-color: rgba(0,123,255,0.5); color: #fff; cursor: pointer; width: 120px;">Search</button>
         <button type="button" onclick="showForm()" class="add-btn" style="background-color: rgba(40,167,69,0.5) !important; color: #fff !important; padding: 5px 10px; border: 2px solid #000 !important; border-radius: 5px; cursor: pointer; width: 120px;">Add content</button>
+        <button type="button" id="subcategory-btn" class="cancel-btn" style="background-color: rgba(108,117,125,0.5) !important; color: #fff !important; padding: 5px 10px; border: 2px solid #000 !important; border-radius: 5px; cursor: pointer; width: 120px;">Subcategories</button>
     </div>
 
     <!-- Subcategory Management -->
-    <div id="subcategory-section" style="margin: 20px 0; padding: 15px; background-color: rgba(0,0,0,0.5); border-radius: 8px;">
+    <div id="subcategory-section" style="margin: 20px 0; padding: 15px; background-color: rgba(0,0,0,0.5); border-radius: 8px; display: none;">
         <h3>Add Subcategory</h3>
         <form id="subcategory-form" style="display: flex; gap: 10px; align-items: center;">
             <input type="text" id="subcategory-name" placeholder="Subcategory name" required style="padding: 10px; border: 1px solid #555; border-radius: 5px; background-color: #222; color: #fff;">
@@ -386,6 +387,13 @@ authForm.addEventListener('submit', async (e) => {
         mainContent.style.display = 'block';
         loadContents();
         loadSubcategories();
+
+        // Subcategories button toggle
+        const subcategoryBtn = document.getElementById('subcategory-btn');
+        subcategoryBtn.addEventListener('click', () => {
+            const section = document.getElementById('subcategory-section');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        });
     } else {
         loginError.textContent = 'Invalid role or password';
         loginError.style.display = 'block';
