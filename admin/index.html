@@ -23,7 +23,7 @@ body {
 }
 
 .content-item {
-    flex: 1 1 300px;
+    flex: 0 0 auto;
     border: 1px solid #333;
     padding: 15px;
     margin: 0;
@@ -36,6 +36,11 @@ body {
 .content-item:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
     transform: translateY(-2px);
+}
+
+.content-item h3 {
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 form {
@@ -97,6 +102,14 @@ button:hover {
 
 .delete-btn:hover {
     background-color: #c82333;
+}
+
+.edit-btn, .delete-btn {
+    border: none !important;
+    width: auto;
+    padding: 5px;
+    font-size: 14px;
+    margin: 0 5px;
 }
 
 .header-actions {
@@ -374,9 +387,10 @@ const cateField = document.getElementById('cate');
 
 async function checkLogin(username, password) {
     try {
-        console.log('Username:', username);
+        const usernameLower = username.toLowerCase();
+        console.log('Username:', usernameLower);
         console.log('Password:', password);
-        const docRef = doc(window.db, 'role', username);
+        const docRef = doc(window.db, 'role', usernameLower);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
@@ -403,7 +417,7 @@ authForm.addEventListener('submit', async (e) => {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     if (await checkLogin(username, password)) {
-        window.currentUser = username;
+        window.currentUser = username.toLowerCase();
         loginForm.style.display = 'none';
         mainContent.style.display = 'block';
         loadContents();
@@ -445,10 +459,10 @@ async function loadContents() {
             item.innerHTML = `
                 <h3>${data.title}</h3>
             `;
-            if (window.currentUser === 'admin') {
+            if (window.currentUser.toLowerCase() === 'admin') {
                 const editBtn = document.createElement('button');
                 editBtn.className = 'edit-btn';
-                editBtn.textContent = 'Edit';
+                editBtn.innerHTML = '<i class="bi bi-pencil-square"></i>';
                 editBtn.addEventListener('click', () => {
                     editContent(
                         doc.id,
@@ -462,13 +476,14 @@ async function loadContents() {
                 });
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'delete-btn';
-                deleteBtn.textContent = 'Delete';
+                deleteBtn.innerHTML = '<i class="bi bi-trash"></i>';
                 deleteBtn.addEventListener('click', () => {
                     deleteContent(doc.id);
                 });
                 const buttonContainer = document.createElement('div');
                 buttonContainer.style.display = 'flex';
                 buttonContainer.style.gap = '10px';
+                buttonContainer.style.justifyContent = 'center';
                 buttonContainer.appendChild(editBtn);
                 buttonContainer.appendChild(deleteBtn);
                 item.appendChild(buttonContainer);
@@ -498,9 +513,9 @@ function renderSubcategories() {
         item.style.borderRadius = '5px';
         item.style.margin = '5px';
         item.textContent = sub.name;
-        if (window.currentUser === 'admin') {
+        if (window.currentUser.toLowerCase() === 'admin') {
             const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'X';
+            deleteBtn.innerHTML = '<i class="bi bi-trash"></i>';
             deleteBtn.style.marginLeft = '10px';
             deleteBtn.style.backgroundColor = 'red';
             deleteBtn.style.color = 'white';
