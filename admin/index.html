@@ -97,6 +97,24 @@ button:hover {
     background-color: #218838;
 }
 
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.button-group button {
+    flex: 0 0 150px;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268;
+}
+
 .login-form {
     border: 1px solid #333;
     padding: 30px;
@@ -249,8 +267,10 @@ h1 {
             <option value="Manhwa/Manga">Manhwa/Manga</option>
         </select>
         <div id="upload-spinner"><div class="spinner"></div>Uploading...</div>
-        <button type="submit" class="add-btn">Submit</button>
-        <button type="button" onclick="cancelForm()">Cancel</button>
+        <div class="button-group">
+            <button type="submit" class="add-btn">Submit</button>
+            <button type="button" onclick="cancelForm()" class="cancel-btn">Cancel</button>
+        </div>
     </form>
 
     <script type="module">
