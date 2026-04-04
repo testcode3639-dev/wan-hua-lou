@@ -59,8 +59,6 @@
             flex-wrap: wrap;
             justify-content: flex-start;
             gap: 20px;
-            width: 45vw;
-            float: left;
         }
 
         .content-item {
@@ -86,11 +84,11 @@
         }
 
         .content-item img, .content-item video {
-            width: 90vw;
-            height: auto;
+            width: auto;
+            height: 75vh;
             border-radius: 5px;
             margin: 0 0 10px 0;
-            flex: 0 0 100%;
+            flex: none;
         }
 
         .content-item p {
@@ -136,10 +134,10 @@
                             <h1>${data.title}</h1>
                             <p>${data.info}</p>
                             <div class="videos">
-                                ${data.vid ? data.vid.map(vid => `<video controls onload="adjustMedia(this)"><source src="${vid.url}" type="video/mp4"></video>`).join('') : ''}
+                                ${data.vid ? data.vid.map(vid => `<video controls><source src="${vid.url}" type="video/mp4"></video>`).join('') : ''}
                             </div>
                             <div class="images">
-                                ${data.img ? data.img.map(img => `<img src="${img.url}" alt="Image" onload="adjustMedia(this)">`).join('') : ''}
+                                ${data.img ? data.img.map(img => `<img src="${img.url}" alt="Image">`).join('') : ''}
                             </div>
                         </div>
                     `;
@@ -156,6 +154,7 @@
             element.style.height = '75vh';
             element.style.width = 'auto';
         }
+        window.adjustMedia = adjustMedia;
     </script>
 </head>
 <body>
