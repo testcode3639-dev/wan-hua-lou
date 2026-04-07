@@ -228,7 +228,7 @@
             const isMobile = window.innerWidth <= 768;
             if (isMobile) {
                 container.style.maxHeight = 'none';
-                container.innerHTML = '<button id="category-btn" style="color: #fff; background: transparent; padding: 10px; font-family: \'Shalimar\', cursive; font-size: 20px;">Thể loại</button><div id="category-list" style="display: none; height: 100vh; overflow-y: auto;"></div>';
+                container.innerHTML = '<div id="category-list" style="display: none; height: 100vh; overflow-y: auto;"></div>';
                 const listContainer = document.getElementById('category-list');
                 subcategories.forEach(sub => {
                     const label = document.createElement('label');
@@ -350,16 +350,27 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('loading-overlay').style.display = 'flex';
+            if (window.innerWidth <= 768) {
+                const searchContainer = document.getElementById('search-container');
+                const categoryBtn = document.createElement('button');
+                categoryBtn.id = 'category-btn';
+                categoryBtn.style.color = '#fff';
+                categoryBtn.style.background = 'transparent';
+                categoryBtn.style.border = 'none';
+                categoryBtn.style.padding = '10px';
+                categoryBtn.style.fontFamily = "'Shalimar', cursive";
+                categoryBtn.style.fontSize = "20px";
+                categoryBtn.textContent = 'Thể loại';
+                searchContainer.appendChild(categoryBtn);
+                searchContainer.style.display = 'flex';
+                searchContainer.style.alignItems = 'center';
+                searchContainer.style.gap = '10px';
+                const input = document.getElementById('search');
+                input.style.display = 'block';
+            }
             await loadContents();
             await loadSubcategories();
             document.getElementById('search').addEventListener('input', filterItems);
-            if (window.innerWidth <= 768) {
-                const icon = document.querySelector('#search-container i');
-                icon.addEventListener('click', () => {
-                    const input = document.getElementById('search');
-                    input.style.display = input.style.display === 'none' ? 'block' : 'none';
-                });
-            }
             document.getElementById('loading-overlay').style.display = 'none';
         });
 
