@@ -226,31 +226,63 @@
         function renderSubcategoryFilters() {
             const container = document.getElementById('subcategory-filter');
             const isMobile = window.innerWidth <= 768;
-            const header = isMobile ? '' : '<h4 style="color: #fff; margin: 0 0 10px 0; font-family: \'Shalimar\', cursive; font-weight: normal; font-size: 28px;">Thể loại</h4>';
-            container.innerHTML = header;
-            subcategories.forEach(sub => {
-                const label = document.createElement('label');
-                label.style.display = 'block';
-                label.style.color = '#fff';
-                label.style.margin = '5px 0';
-                label.style.fontFamily = "'Shalimar', cursive";
-                label.style.fontSize = isMobile ? "20px" : "28px";
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.value = sub.id;
-                checkbox.checked = selectedSubcategories.includes(sub.id);
-                checkbox.addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        selectedSubcategories.push(sub.id);
-                    } else {
-                        selectedSubcategories = selectedSubcategories.filter(id => id !== sub.id);
-                    }
-                    filterItems();
+            if (isMobile) {
+                container.innerHTML = '<button id="category-btn" style="color: #fff; background: transparent; padding: 10px; font-family: \'Shalimar\', cursive; font-size: 20px;">Thể loại</button><div id="category-list" style="display: none; margin-top: 10px;"></div>';
+                const listContainer = document.getElementById('category-list');
+                subcategories.forEach(sub => {
+                    const label = document.createElement('label');
+                    label.style.display = 'block';
+                    label.style.color = '#fff';
+                    label.style.margin = '5px 0';
+                    label.style.fontFamily = "'Shalimar', cursive";
+                    label.style.fontSize = "20px";
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = sub.id;
+                    checkbox.checked = selectedSubcategories.includes(sub.id);
+                    checkbox.addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                            selectedSubcategories.push(sub.id);
+                        } else {
+                            selectedSubcategories = selectedSubcategories.filter(id => id !== sub.id);
+                        }
+                        filterItems();
+                    });
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(' ' + sub.name));
+                    listContainer.appendChild(label);
                 });
-                label.appendChild(checkbox);
-                label.appendChild(document.createTextNode(' ' + sub.name));
-                container.appendChild(label);
-            });
+                document.getElementById('category-btn').addEventListener('click', () => {
+                    const list = document.getElementById('category-list');
+                    list.style.display = list.style.display === 'none' ? 'block' : 'none';
+                });
+            } else {
+                const header = '<h4 style="color: #fff; margin: 0 0 10px 0; font-family: \'Shalimar\', cursive; font-weight: normal; font-size: 28px;">Thể loại</h4>';
+                container.innerHTML = header;
+                subcategories.forEach(sub => {
+                    const label = document.createElement('label');
+                    label.style.display = 'block';
+                    label.style.color = '#fff';
+                    label.style.margin = '5px 0';
+                    label.style.fontFamily = "'Shalimar', cursive";
+                    label.style.fontSize = "28px";
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = sub.id;
+                    checkbox.checked = selectedSubcategories.includes(sub.id);
+                    checkbox.addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                            selectedSubcategories.push(sub.id);
+                        } else {
+                            selectedSubcategories = selectedSubcategories.filter(id => id !== sub.id);
+                        }
+                        filterItems();
+                    });
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(' ' + sub.name));
+                    container.appendChild(label);
+                });
+            }
         }
 
         async function loadContents() {
