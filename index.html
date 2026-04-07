@@ -227,7 +227,8 @@
             const container = document.getElementById('subcategory-filter');
             const isMobile = window.innerWidth <= 768;
             if (isMobile) {
-                container.innerHTML = '<button id="category-btn" style="color: #fff; background: transparent; padding: 10px; font-family: \'Shalimar\', cursive; font-size: 20px;">Thể loại</button><div id="category-list" style="display: none; margin-top: 10px;"></div>';
+                container.style.maxHeight = 'none';
+                container.innerHTML = '<button id="category-btn" style="color: #fff; background: transparent; padding: 10px; font-family: \'Shalimar\', cursive; font-size: 20px;">Thể loại</button><div id="category-list" style="display: none; height: 100vh; overflow-y: auto;"></div>';
                 const listContainer = document.getElementById('category-list');
                 subcategories.forEach(sub => {
                     const label = document.createElement('label');
@@ -254,11 +255,23 @@
                 });
                 document.getElementById('category-btn').addEventListener('click', () => {
                     const list = document.getElementById('category-list');
-                    list.style.display = list.style.display === 'none' ? 'block' : 'none';
+                    const container = document.getElementById('subcategory-filter');
+                    if (list.style.display === 'none') {
+                        list.style.display = 'block';
+                        container.style.top = '0';
+                        container.style.height = '100vh';
+                    } else {
+                        list.style.display = 'none';
+                        container.style.top = '120px';
+                        container.style.height = 'auto';
+                    }
                 });
             } else {
                 const header = '<h4 style="color: #fff; margin: 0 0 10px 0; font-family: \'Shalimar\', cursive; font-weight: normal; font-size: 28px;">Thể loại</h4>';
                 container.innerHTML = header;
+                container.style.maxHeight = 'none';
+                container.style.height = 'calc(100vh - 120px)';
+                container.style.overflowY = 'auto';
                 subcategories.forEach(sub => {
                     const label = document.createElement('label');
                     label.style.display = 'block';
