@@ -289,7 +289,7 @@
                 const titleMatch = item.title.toLowerCase().includes(query);
                 const subcateNames = item.subcate.map(id => subcategories.find(sub => sub.id === id)?.name || '').join(' ').toLowerCase();
                 const subcateNameMatch = subcateNames.includes(query);
-                const selectedMatch = selectedSubcategories.length === 0 || item.subcate.some(sub => selectedSubcategories.includes(sub));
+                const selectedMatch = selectedSubcategories.length === 0 || selectedSubcategories.every(sub => item.subcate.includes(sub));
                 return (titleMatch || subcateNameMatch) && selectedMatch;
             });
             displayItems(filtered);
