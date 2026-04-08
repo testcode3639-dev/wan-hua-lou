@@ -163,7 +163,7 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             const isMobile = window.innerWidth <= 768;
-            const videoSrc = isMobile ? 'phone.mp4' : 'pc.mp4';
+            const videoSrc = isMobile ? 'mobile.mp4' : 'pc.mp4';
             const videoElement = document.getElementById('background-video');
             videoElement.querySelector('source').src = videoSrc;
             videoElement.load();

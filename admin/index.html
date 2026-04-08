@@ -390,26 +390,21 @@ const cateField = document.getElementById('cate');
 async function checkLogin(username, password) {
     try {
         const usernameLower = username.toLowerCase();
-        console.log('Username:', usernameLower);
-        console.log('Password:', password);
         const docRef = doc(window.db, 'role', usernameLower);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
-            console.log('Found data:', data);
-            console.log('Password in DB:', data.password);
             if (data.password === password) {
-                console.log('Login successful');
                 return true;
             } else {
-                console.log('Password mismatch');
+                console.error('Password mismatch');
             }
         } else {
-            console.log('No document found for username:', username);
+            console.error('No document found for username:', username);
         }
         return false;
     } catch (error) {
-        console.log('Error in checkLogin:', error);
+        console.error('Error in checkLogin:', error);
         return false;
     }
 }
