@@ -366,7 +366,13 @@
                 if (sortBy == 'updatedAt') {
                     return new Date(b.data.updatedAt) - new Date(a.data.updatedAt);
                 } else if (sortBy == 'view') {
-                    return (b.data.view || 0) - (a.data.view || 0);
+                    const aView = a.data.view || 0;
+                    const bView = b.data.view || 0;
+                    if (bView !== aView) {
+                        return bView - aView;
+                    } else {
+                        return new Date(b.data.updatedAt) - new Date(a.data.updatedAt);
+                    }
                 }
             });
             displayItems(allItems);
