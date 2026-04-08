@@ -192,7 +192,7 @@
                     contentContainer.innerHTML = `
                         <div class="content-item">
                             <h1>${data.title}</h1>
-                            <p>${data.info.replace(/\n/g, '<br>')}</p>
+                            <p>${data.info.replace(/\n/g, '<br>').replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>')}</p>
                             <div class="videos">
                                 ${data.vid ? data.vid.map(vid => `<video controls><source src="${vid.url}" type="video/mp4"></video>`).join('') : ''}
                             </div>
