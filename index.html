@@ -255,6 +255,26 @@
                     label.appendChild(document.createTextNode(' ' + sub.name));
                     listContainer.appendChild(label);
                 });
+                const sortLabel = document.createElement('label');
+                sortLabel.style.display = 'block';
+                sortLabel.style.color = '#fff';
+                sortLabel.style.margin = '5px 0';
+                sortLabel.style.fontFamily = "'Shalimar', cursive";
+                sortLabel.style.fontSize = "20px";
+                const sortCheckbox = document.createElement('input');
+                sortCheckbox.type = 'checkbox';
+                sortCheckbox.id = 'sort-checkbox';
+                sortCheckbox.addEventListener('change', async (e) => {
+                    if (e.target.checked) {
+                        await loadContents('view', 'desc');
+                    } else {
+                        await loadContents();
+                    }
+                    filterItems();
+                });
+                sortLabel.appendChild(sortCheckbox);
+                sortLabel.appendChild(document.createTextNode(' Lượt xem cao nhất'));
+                listContainer.appendChild(sortLabel);
                 document.getElementById('category-btn').addEventListener('click', () => {
                     const list = document.getElementById('category-list');
                     const container = document.getElementById('subcategory-filter');
@@ -297,13 +317,34 @@
                     label.appendChild(document.createTextNode(' ' + sub.name));
                     container.appendChild(label);
                 });
+                const sortLabel = document.createElement('label');
+                sortLabel.style.display = 'block';
+                sortLabel.style.color = '#fff';
+                sortLabel.style.margin = '5px 0';
+                sortLabel.style.fontFamily = "'Shalimar', cursive";
+                sortLabel.style.fontSize = "28px";
+                const sortCheckbox = document.createElement('input');
+                sortCheckbox.type = 'checkbox';
+                sortCheckbox.id = 'sort-checkbox';
+                sortCheckbox.addEventListener('change', async (e) => {
+                    if (e.target.checked) {
+                        await loadContents('view', 'desc');
+                    } else {
+                        await loadContents();
+                    }
+                    filterItems();
+                });
+                sortLabel.appendChild(sortCheckbox);
+                sortLabel.appendChild(document.createTextNode(' Lượt xem cao nhất'));
+                container.appendChild(sortLabel);
             }
         }
 
-        async function loadContents() {
+        async function loadContents(sortBy = 'updatedAt') {
             const contentContainer = document.getElementById('content-container');
             contentContainer.innerHTML = '';
-            const querySnapshot = await getDocs(query(collection(db, 'content'), orderBy('updatedAt', 'desc')));
+            const q = query(collection(db, 'content'));
+            const querySnapshot = await getDocs(q);
             allItems = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
@@ -319,7 +360,14 @@
                 `;
                 item.style.cursor = 'pointer';
                 item.onclick = () => window.location.href = 'view/index.html?id=' + doc.id;
-                allItems.push({element: item, title: data.title, subcate: data.subcate || []});
+                allItems.push({element: item, title: data.title, subcate: data.subcate || [], data: data});
+            });
+            allItems.sort((a, b) => {
+                if (sortBy == 'updatedAt') {
+                    return new Date(b.data.updatedAt) - new Date(a.data.updatedAt);
+                } else if (sortBy == 'view') {
+                    return (b.data.view || 0) - (a.data.view || 0);
+                }
             });
             displayItems(allItems);
         }
