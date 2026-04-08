@@ -222,6 +222,7 @@
             querySnapshot.forEach((doc) => {
                 subcategories.push({id: doc.id, name: doc.data().name});
             });
+            subcategories.sort((a, b) => a.name.localeCompare(b.name));
             renderSubcategoryFilters();
         }
 
@@ -294,6 +295,26 @@
                 container.style.maxHeight = 'none';
                 container.style.height = 'calc(100vh - 120px)';
                 container.style.overflowY = 'auto';
+                const sortLabel = document.createElement('label');
+                sortLabel.style.display = 'block';
+                sortLabel.style.color = '#fff';
+                sortLabel.style.margin = '5px 0';
+                sortLabel.style.fontFamily = "'Shalimar', cursive";
+                sortLabel.style.fontSize = "28px";
+                const sortCheckbox = document.createElement('input');
+                sortCheckbox.type = 'checkbox';
+                sortCheckbox.id = 'sort-checkbox';
+                sortCheckbox.addEventListener('change', async (e) => {
+                    if (e.target.checked) {
+                        await loadContents('view');
+                    } else {
+                        await loadContents();
+                    }
+                    filterItems();
+                });
+                sortLabel.appendChild(sortCheckbox);
+                sortLabel.appendChild(document.createTextNode(' Lượt xem cao nhất'));
+                container.appendChild(sortLabel);
                 subcategories.forEach(sub => {
                     const label = document.createElement('label');
                     label.style.display = 'block';
@@ -317,26 +338,6 @@
                     label.appendChild(document.createTextNode(' ' + sub.name));
                     container.appendChild(label);
                 });
-                const sortLabel = document.createElement('label');
-                sortLabel.style.display = 'block';
-                sortLabel.style.color = '#fff';
-                sortLabel.style.margin = '5px 0';
-                sortLabel.style.fontFamily = "'Shalimar', cursive";
-                sortLabel.style.fontSize = "28px";
-                const sortCheckbox = document.createElement('input');
-                sortCheckbox.type = 'checkbox';
-                sortCheckbox.id = 'sort-checkbox';
-                sortCheckbox.addEventListener('change', async (e) => {
-                    if (e.target.checked) {
-                        await loadContents('view', 'desc');
-                    } else {
-                        await loadContents();
-                    }
-                    filterItems();
-                });
-                sortLabel.appendChild(sortCheckbox);
-                sortLabel.appendChild(document.createTextNode(' Lượt xem cao nhất'));
-                container.appendChild(sortLabel);
             }
         }
 
