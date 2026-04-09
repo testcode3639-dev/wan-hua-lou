@@ -417,7 +417,7 @@
                 const thumbUrl = data.thumb || (data.img && Array.isArray(data.img) && data.img.length > 0 ? data.img[0].url : '');
                 const imageCount = data.img && Array.isArray(data.img) ? data.img.length : 0;
                 const videoCount = data.vid && Array.isArray(data.vid) ? data.vid.length : 0;
-                const hotBadge = data.hot ? `<div style="position: absolute; top: 0; left: 0; background: red; color: white; padding: 2px 5px; font-weight: bold; font-size: 12px; animation: blink 1s infinite; z-index: 1;">HOT</div>` : '';
+                const hotBadge = data.hot ? `<div style="position: absolute; top: 0; left: 0; background: linear-gradient(45deg, #ff0000, #ff6600); color: white; padding: 3px 8px; font-family: 'Shalimar', cursive; font-weight: bold; font-size: 18px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.5); animation: blink 1.5s infinite; z-index: 1; border: 2px solid #ffff00; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);">18+</div>` : '';
                 item.innerHTML = hotBadge + `
                     <h3 style="margin-top: 20px;">${data.title}</h3>
                     ${thumbUrl ? `<img src="${thumbUrl}" alt="Image" onload="adjustImage(this)">` : ''}
