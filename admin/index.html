@@ -332,6 +332,8 @@ h1 {
         <input type="file" id="mediaFile" multiple accept="image/*,video/*">
         <div id="preview-selected"></div>
         <div id="subcate-checkboxes"></div>
+        <label for="hot-checkbox" style="color: #fff; margin: 10px 0; display: block; text-align: center;">Hot</label>
+        <input type="checkbox" id="hot-checkbox" style="display: block; margin: 0 auto;">
         <div class="button-group">
             <button type="submit" class="add-btn">Submit</button>
             <button type="button" onclick="cancelForm()" class="cancel-btn">Cancel</button>
@@ -385,7 +387,7 @@ const contentForm = document.getElementById('content-form');
 const docIdField = document.getElementById('doc-id');
 const titleField = document.getElementById('title');
 const infoField = document.getElementById('info');
-const cateField = document.getElementById('cate');
+const hotCheckbox = document.getElementById('hot-checkbox');
 
 async function checkLogin(username, password) {
     try {
@@ -468,7 +470,8 @@ async function loadContents() {
                         data.img || [],
                         data.vid || [],
                         data.subcate || [],
-                        data.thumb || ''
+                        data.thumb || '',
+                        data.hot || false
                     );
                 });
                 const deleteBtn = document.createElement('button');
@@ -600,7 +603,7 @@ document.getElementById('subcategory-form').addEventListener('submit', async (e)
     }
 });
 
-globalThis.editContent = function(id, title, info, img, vid, subcate, thumb) {
+globalThis.editContent = function(id, title, info, img, vid, subcate, thumb, hot) {
     docIdField.value = id;
     titleField.value = title;
     infoField.value = info;
@@ -608,6 +611,7 @@ globalThis.editContent = function(id, title, info, img, vid, subcate, thumb) {
     uploadedVideos = vid || [];
     selectedSubcategories = subcate || [];
     currentThumb = thumb;
+    hotCheckbox.checked = hot;
     renderExistingMedia();
     renderSubcateCheckboxes();
     contentForm.style.display = 'block';
@@ -632,6 +636,7 @@ globalThis.showForm = function() {
     uploadedImages = [];
     uploadedVideos = [];
     selectedSubcategories = [];
+    hotCheckbox.checked = false;
     renderExistingMedia();
     renderSubcateCheckboxes();
     document.getElementById('preview-selected').innerHTML = '';
@@ -646,6 +651,7 @@ globalThis.cancelForm = function() {
     uploadedVideos = [];
     selectedSubcategories = [];
     currentThumb = '';
+    hotCheckbox.checked = false;
     renderExistingMedia();
     renderSubcateCheckboxes();
     document.getElementById('preview-selected').innerHTML = '';
@@ -701,7 +707,8 @@ contentForm.addEventListener('submit', async (e) => {
         vid: uploadedVideos,
         subcate: selectedSubcategories,
         thumb: thumbUrl,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
+        hot: hotCheckbox.checked
     };
     if (docIdField.value) {
         await updateDoc(doc(window.db, 'content', docIdField.value), data);
