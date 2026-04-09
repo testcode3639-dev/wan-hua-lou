@@ -436,9 +436,10 @@
             const isMobile = window.innerWidth <= 768;
             const prevText = isMobile ? 'Prev' : 'Trang trước';
             const nextText = isMobile ? 'Next' : 'Trang sau';
+            const fontSize = isMobile ? '20px' : '24px';
             const prevBtn = document.createElement('button');
             prevBtn.textContent = prevText;
-            prevBtn.style.cssText = 'background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: 16px; cursor: pointer;';
+            prevBtn.style.cssText = `background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: ${fontSize}; cursor: pointer;`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => {
                 if (currentPage > 1) {
@@ -453,7 +454,7 @@
             for (let i = startPage; i <= endPage; i++) {
                 const pageBtn = document.createElement('button');
                 pageBtn.textContent = i;
-                pageBtn.style.cssText = 'background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: 16px; cursor: pointer;';
+                pageBtn.style.cssText = `background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: ${fontSize}; cursor: pointer;`;
                 if (i === currentPage) {
                     pageBtn.style.background = '#fff';
                     pageBtn.style.color = '#000';
@@ -467,7 +468,7 @@
             }
             const nextBtn = document.createElement('button');
             nextBtn.textContent = nextText;
-            nextBtn.style.cssText = 'background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: 16px; cursor: pointer;';
+            nextBtn.style.cssText = `background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: ${fontSize}; cursor: pointer;`;
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => {
                 if (currentPage < totalPages) {
