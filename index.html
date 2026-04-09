@@ -314,8 +314,8 @@
             } else {
                 const header = '<h4 style="color: #fff; margin: 0 0 10px 0; font-family: \'Shalimar\', cursive; font-weight: normal; font-size: 28px;">Thể loại</h4>';
                 container.innerHTML = header;
-                container.style.maxHeight = 'none';
-                container.style.height = 'calc(100vh - 120px)';
+                container.style.maxHeight = 'calc(100vh - 120px)';
+                container.style.height = 'auto';
                 container.style.overflowY = 'auto';
                 const sortLabel = document.createElement('label');
                 sortLabel.style.display = 'block';
@@ -360,6 +360,16 @@
                     label.appendChild(document.createTextNode(' ' + sub.name));
                     container.appendChild(label);
                 });
+                // Position pagination below the subcategory filter on desktop
+                setTimeout(() => {
+                    const filter = document.getElementById('subcategory-filter');
+                    const filterHeight = filter.offsetHeight;
+                    const pagination = document.getElementById('pagination');
+                    pagination.style.top = Math.min(120 + filterHeight + 20, window.innerHeight - 50) + 'px';
+                    pagination.style.bottom = 'auto';
+                    pagination.style.position = 'fixed';
+                    pagination.style.right = '20px';
+                }, 0);
             }
         }
 
