@@ -475,8 +475,8 @@
             pageInput.min = 1;
             pageInput.max = totalPages;
             pageInput.value = currentPage;
-            pageInput.style.cssText = `width: 20px; padding: 5px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: ${fontSize}; -webkit-appearance: none; -moz-appearance: textfield;`;
-            pageInput.addEventListener('change', () => {
+            pageInput.style.cssText = `width: 25px; padding: 5px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: ${fontSize}; -webkit-appearance: none; -moz-appearance: textfield;`;
+            pageInput.addEventListener('input', () => {
                 const page = parseInt(pageInput.value);
                 if (page >= 1 && page <= totalPages) {
                     currentPage = page;
