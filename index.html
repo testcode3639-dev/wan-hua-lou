@@ -469,6 +469,7 @@
                     currentPage--;
                     displayItems(currentFilteredItems, currentPage);
                     renderPagination();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             };
             container.appendChild(prevBtn);
@@ -485,6 +486,7 @@
                     currentPage = page;
                     displayItems(currentFilteredItems, currentPage);
                     renderPagination();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else if (value !== '' && !isNaN(page) && (page < 1 || page > totalPages) && !showingNotification) {
                     showingNotification = true;
                     const notification = document.getElementById('notification');
@@ -514,6 +516,7 @@
                     currentPage++;
                     displayItems(currentFilteredItems, currentPage);
                     renderPagination();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             };
             container.appendChild(nextBtn);
