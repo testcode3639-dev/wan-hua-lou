@@ -433,8 +433,11 @@
             const container = document.getElementById('pagination');
             container.innerHTML = '';
             if (totalPages <= 1) return;
+            const isMobile = window.innerWidth <= 768;
+            const prevText = isMobile ? 'Prev' : 'Trang trước';
+            const nextText = isMobile ? 'Next' : 'Trang sau';
             const prevBtn = document.createElement('button');
-            prevBtn.textContent = 'Trang trước';
+            prevBtn.textContent = prevText;
             prevBtn.style.cssText = 'background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: 16px; cursor: pointer;';
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => {
@@ -463,7 +466,7 @@
                 container.appendChild(pageBtn);
             }
             const nextBtn = document.createElement('button');
-            nextBtn.textContent = 'Trang sau';
+            nextBtn.textContent = nextText;
             nextBtn.style.cssText = 'background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: 16px; cursor: pointer;';
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => {
