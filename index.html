@@ -573,9 +573,17 @@
                 const input = document.getElementById('search');
                 input.style.display = 'block';
             }
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchParam = urlParams.get('search');
+            if (searchParam) {
+                document.getElementById('search').value = searchParam;
+            }
             await loadContents();
             await loadSubcategories();
             document.getElementById('search').addEventListener('input', filterItems);
+            if (searchParam) {
+                filterItems();
+            }
             document.getElementById('loading-overlay').style.display = 'none';
             window.addEventListener('resize', () => {
                 const newItemsPerPage = window.innerWidth <= 768 ? 10 : 20;
