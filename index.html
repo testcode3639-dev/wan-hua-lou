@@ -446,6 +446,7 @@
             const isMobile = window.innerWidth <= 768;
             const prevText = isMobile ? 'Prev' : 'Trang trước';
             const nextText = isMobile ? 'Next' : 'Trang sau';
+            const goText = isMobile ? 'Go' : 'Đi đến';
             const fontSize = isMobile ? '20px' : '24px';
             const prevBtn = document.createElement('button');
             prevBtn.textContent = prevText;
@@ -459,23 +460,29 @@
                 }
             };
             container.appendChild(prevBtn);
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(totalPages, currentPage + 2);
-            for (let i = startPage; i <= endPage; i++) {
-                const pageBtn = document.createElement('button');
-                pageBtn.textContent = i;
-                pageBtn.style.cssText = `background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: ${fontSize}; cursor: pointer;`;
-                if (i === currentPage) {
-                    pageBtn.style.background = '#fff';
-                    pageBtn.style.color = '#000';
-                }
-                pageBtn.onclick = () => {
-                    currentPage = i;
+            const pageInput = document.createElement('input');
+            pageInput.type = 'number';
+            pageInput.min = 1;
+            pageInput.max = totalPages;
+            pageInput.value = currentPage;
+            pageInput.style.cssText = `width: 20px; padding: 5px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: ${fontSize};`;
+            pageInput.addEventListener('change', () => {
+                const page = parseInt(pageInput.value);
+                if (page >= 1 && page <= totalPages) {
+                    currentPage = page;
                     displayItems(currentFilteredItems, currentPage);
                     renderPagination();
-                };
-                container.appendChild(pageBtn);
-            }
+                }
+            });
+            container.appendChild(pageInput);
+            const slash = document.createElement('span');
+            slash.textContent = ' / ';
+            slash.style.cssText = `color: #fff; margin: 0 5px; font-family: "Shalimar", cursive; font-size: ${fontSize};`;
+            container.appendChild(slash);
+            const totalDisplay = document.createElement('span');
+            totalDisplay.textContent = totalPages;
+            totalDisplay.style.cssText = `color: #fff; margin: 0 5px; font-family: "Shalimar", cursive; font-size: ${fontSize};`;
+            container.appendChild(totalDisplay);
             const nextBtn = document.createElement('button');
             nextBtn.textContent = nextText;
             nextBtn.style.cssText = `background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: ${fontSize}; cursor: pointer;`;
