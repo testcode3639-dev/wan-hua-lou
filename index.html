@@ -174,6 +174,16 @@
             }
         }
 
+        #pagination {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+        }
+
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #3498db;
@@ -215,6 +225,10 @@
         let allItems = [];
         let subcategories = [];
         let selectedSubcategories = [];
+        let currentFilteredItems = [];
+        let currentPage = 1;
+        let itemsPerPage = window.innerWidth <= 768 ? 10 : 20;
+        let totalPages = 1;
 
         async function loadSubcategories() {
             subcategories = [];
@@ -376,13 +390,19 @@
                     }
                 }
             });
-            displayItems(allItems);
+            currentFilteredItems = allItems;
+            totalPages = Math.ceil(allItems.length / itemsPerPage);
+            displayItems(allItems, currentPage);
+            renderPagination();
         }
 
-        function displayItems(items) {
+        function displayItems(items, page) {
             const container = document.getElementById('content-container');
             container.innerHTML = '';
-            items.forEach(item => container.appendChild(item.element));
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageItems = items.slice(start, end);
+            pageItems.forEach(item => container.appendChild(item.element));
         }
 
         function filterItems() {
@@ -394,7 +414,58 @@
                 const selectedMatch = selectedSubcategories.length === 0 || selectedSubcategories.every(sub => item.subcate.includes(sub));
                 return (titleMatch || subcateNameMatch) && selectedMatch;
             });
-            displayItems(filtered);
+            currentFilteredItems = filtered;
+            totalPages = Math.ceil(filtered.length / itemsPerPage);
+            currentPage = 1;
+            displayItems(filtered, 1);
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const container = document.getElementById('pagination');
+            container.innerHTML = '';
+            if (totalPages <= 1) return;
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = 'Trang trước';
+            prevBtn.style.cssText = 'background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: 16px; cursor: pointer;';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayItems(currentFilteredItems, currentPage);
+                    renderPagination();
+                }
+            };
+            container.appendChild(prevBtn);
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.style.cssText = 'background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: 16px; cursor: pointer;';
+                if (i === currentPage) {
+                    pageBtn.style.background = '#fff';
+                    pageBtn.style.color = '#000';
+                }
+                pageBtn.onclick = () => {
+                    currentPage = i;
+                    displayItems(currentFilteredItems, currentPage);
+                    renderPagination();
+                };
+                container.appendChild(pageBtn);
+            }
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Trang sau';
+            nextBtn.style.cssText = 'background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px; margin: 0 5px; font-family: "Shalimar", cursive; font-size: 16px; cursor: pointer;';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayItems(currentFilteredItems, currentPage);
+                    renderPagination();
+                }
+            };
+            container.appendChild(nextBtn);
         }
 
         function adjustImage(img) {
@@ -429,6 +500,16 @@
             await loadSubcategories();
             document.getElementById('search').addEventListener('input', filterItems);
             document.getElementById('loading-overlay').style.display = 'none';
+            window.addEventListener('resize', () => {
+                const newItemsPerPage = window.innerWidth <= 768 ? 10 : 20;
+                if (newItemsPerPage !== itemsPerPage) {
+                    itemsPerPage = newItemsPerPage;
+                    totalPages = Math.ceil(currentFilteredItems.length / itemsPerPage);
+                    currentPage = 1;
+                    displayItems(currentFilteredItems, 1);
+                    renderPagination();
+                }
+            });
         });
 
         window.addEventListener('scroll', () => {
@@ -466,6 +547,7 @@
     <div id="content-container">
         <!-- Content will be loaded here -->
     </div>
+    <div id="pagination"></div>
     <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; color: #fff; font-size: 16px;">
         <div class="spinner"></div>
     </div>
